@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 
 public class P2PClientGUI {
     private JLabel connectionLabel;
@@ -12,7 +13,7 @@ public class P2PClientGUI {
     private JLabel hostnameLabel;
     private JTextField hostname;
     private JLabel speedLabel;
-    private JComboBox speedBox;
+    private JComboBox<String> speedBox;
     private JLabel searchLabel;
     private JLabel keywordLabel;
     private JTextField keyword;
@@ -24,6 +25,18 @@ public class P2PClientGUI {
     private JButton goButton;
     private JTextArea commandLineArea;
     private JPanel mainPanel;
+    private JScrollPane commandPane;
+    private JScrollPane tablePane;
+    private P2PClient client;
+
+    private P2PClientGUI() {
+        client = new P2PClient();
+        JFrame frame = new JFrame("P2P Client");
+        speedBox.addItem("T1");
+        speedBox.addItem("T3");
+        speedBox.addItem("Ethernet");
+        speedBox.addItem("Modem");
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("P2PClientGUI");
@@ -31,5 +44,11 @@ public class P2PClientGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private void createUIComponents() {
+        String[] columnNames = {"Speed", "Hostname", "Filename"};
+        String[][] data = {};
+        hostsTable = new JTable(data, columnNames);
     }
 }
