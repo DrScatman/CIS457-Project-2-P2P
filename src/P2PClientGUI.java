@@ -1,5 +1,9 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class P2PClientGUI {
     private JLabel connectionLabel;
@@ -28,6 +32,7 @@ public class P2PClientGUI {
     private JScrollPane commandPane;
     private JScrollPane tablePane;
     private P2PClient client;
+    private DefaultTableModel model;
 
     private P2PClientGUI() {
         client = new P2PClient();
@@ -36,6 +41,10 @@ public class P2PClientGUI {
         speedBox.addItem("T3");
         speedBox.addItem("Ethernet");
         speedBox.addItem("Modem");
+        ButtonListener buttonListener = new ButtonListener();
+        searchButton.addActionListener(buttonListener);
+        connectButton.addActionListener(buttonListener);
+        goButton.addActionListener(buttonListener);
     }
 
     public static void main(String[] args) {
@@ -44,11 +53,46 @@ public class P2PClientGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        //constantly update table and panel
+
     }
 
     private void createUIComponents() {
-        String[] columnNames = {"Speed", "Hostname", "Filename"};
-        String[][] data = {};
-        hostsTable = new JTable(data, columnNames);
+        model = new DefaultTableModel();
+        model.addColumn("Speed");
+        model.addColumn("Hostname");
+        model.addColumn("Filename");
+        hostsTable = new JTable(model);
+    }
+
+    private class ButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            //need to wait for client to give table
+            if (e.getSource() == searchButton){
+                String word = keyword.getText();
+                client.receiveSearchCommand(word);
+                String[][] table = {};
+                while (table.equals(null)){
+                    table = client.sendPeerTable();
+                }
+                for (String[] row : table){
+                    model.addRow(row);
+                }
+            }
+
+            if (e.getSource() == connectButton){
+                String connect = serverHostname.getText() + " " + port.getText() + " " + username.getText() + " " + hostname + " " + speedBox.getSelectedItem() + "\n";
+                client.receiveConnectCommand(connect);
+            }
+
+            //need to wait for client to give command line
+            if (e.getSource() == goButton){
+                String comm = command.getText();
+                client.receiveFTPCommand(comm);
+            }
+        }
     }
 }
