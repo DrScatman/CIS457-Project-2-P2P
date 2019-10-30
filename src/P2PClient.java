@@ -14,6 +14,8 @@ public class P2PClient extends Thread {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
+
+
             this.start();
         } catch (IOException e) {
             e.printStackTrace();

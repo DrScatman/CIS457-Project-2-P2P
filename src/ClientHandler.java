@@ -10,7 +10,6 @@ public class ClientHandler extends Thread{
     String hostName;
     String speed;
     BufferedReader readBuffer;
-    DataInputStream in;
     DataOutputStream out;
 
     public ClientHandler(Socket connection) throws Exception{
@@ -24,13 +23,14 @@ public class ClientHandler extends Thread{
         this.socket = connection;
         this.readBuffer = readBuffer;
         this.out = out;
+
         System.out.println("Client connected " + socket.getInetAddress());
+        processPeerClientData();
     }
 
     @Override
     public void run() {
         try{
-            processPeerClientData();
             while(socket.isConnected()){
                 processRequest();
             }
@@ -43,8 +43,8 @@ public class ClientHandler extends Thread{
     private void processPeerClientData() {
         try {
             // First string received contains the username, hostname, and speed for the client
-            in = new DataInputStream(socket.getInputStream());
-            String fromClient = in.readUTF();
+            //in = new DataInputStream(socket.getInputStream());
+            String fromClient = readBuffer.readLine();
 
             // Delimited with spaces
             StringTokenizer tokens = new StringTokenizer(fromClient);
@@ -53,7 +53,7 @@ public class ClientHandler extends Thread{
             speed = tokens.nextToken();
 
             System.out.println(clientName + " has connected");
-            String files = in.readUTF();
+            String files = readBuffer.readLine();
 
             // 404 if no files exist ?
             if(!files.equals("404")) {
@@ -67,7 +67,7 @@ public class ClientHandler extends Thread{
 
                     for(int i = 0; i < numFiles; i++) {
                         // Second line contains file info?
-                        String fileInfo = in.readUTF();
+                        String fileInfo = readBuffer.readLine();
                         tokens = new StringTokenizer(fileInfo);
                         String fileName = tokens.nextToken(" ");
                         String fileDescription = tokens.nextToken();
