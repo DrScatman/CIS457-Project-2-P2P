@@ -5,6 +5,13 @@ import java.util.StringTokenizer;
 
 public class ClientHandler extends Thread{
     Socket socket;
+    String fromClient;
+    String clientName;
+    String hostName;
+    String speed;
+    BufferedReader readBuffer;
+    DataInputStream in;
+    DataOutputStream out;
 
     public ClientHandler(Socket connection) throws Exception{
         super();
@@ -12,10 +19,18 @@ public class ClientHandler extends Thread{
         System.out.println("Client connected " + socket.getInetAddress());
     }
 
+    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out) throws Exception{
+        super();
+        this.socket = connection;
+        this.readBuffer = readBuffer;
+        this.out = out;
+        System.out.println("Client connected " + socket.getInetAddress());
+    }
 
     @Override
     public void run() {
         try{
+            processPeerClientData();
             while(socket.isConnected()){
                 processRequest();
             }
@@ -23,6 +38,53 @@ public class ClientHandler extends Thread{
             System.out.println("Client Disconnected");
         }
 
+    }
+
+    private void processPeerClientData() {
+        try {
+            // First string received contains the username, hostname, and speed for the client
+            in = new DataInputStream(socket.getInputStream());
+            String fromClient = in.readUTF();
+
+            // Delimited with spaces
+            StringTokenizer tokens = new StringTokenizer(fromClient);
+            clientName = tokens.nextToken();
+            hostName = tokens.nextToken();
+            speed = tokens.nextToken();
+
+            System.out.println(clientName + " has connected");
+            String files = in.readUTF();
+
+            // 404 if no files exist ?
+            if(!files.equals("404")) {
+                tokens = new StringTokenizer(files);
+                String data = tokens.nextToken();
+
+                if(data.startsWith("200")) {
+                    //Reads in the number of files available for download.
+                    data = tokens.nextToken();
+                    int numFiles = Integer.parseInt(data);
+
+                    for(int i = 0; i < numFiles; i++) {
+                        // Second line contains file info?
+                        String fileInfo = in.readUTF();
+                        tokens = new StringTokenizer(fileInfo);
+                        String fileName = tokens.nextToken(" ");
+                        String fileDescription = tokens.nextToken();
+
+                        // Peer encapsulates information for the users connection
+                        Peer peer = new Peer(clientName, hostName, speed);
+                        // FileData encapsulates information for the file
+                        FileData fileData = new FileData(fileName, fileDescription);
+
+                        PeerWrapper.addUser(peer);
+                        PeerWrapper.addFileData(fileData);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void processRequest() throws Exception{

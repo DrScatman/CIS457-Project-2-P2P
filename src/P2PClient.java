@@ -1,8 +1,38 @@
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
 
-public class P2PClient {
+public class P2PClient extends Thread {
+
+    private Socket socket;
+    private DataInputStream in;
+    private DataOutputStream out;
+    private String searchCommand, searchResponse, FTPCommand, connectCommand;
+
+    public P2PClient(String serverHostName, int port) {
+        try {
+            socket = new Socket(serverHostName, port);
+            in = new DataInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
+            this.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                if (connectCommand != null && !connectCommand.isEmpty()) {
+                    out.writeUTF(connectCommand);
+                    connectCommand = null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     //needs to get list of clients and their files from the server
     //needs to have FTP client and server implemented, so detects connection and chooses which to be
@@ -10,31 +40,34 @@ public class P2PClient {
     //has to send list of clients, and their files, and commands to GUI
     //has to receive commands from the gui for connecting to server and other peers
     //needs to upload file list and descriptions
-    private String searchCommand, searchResponse, FTPCommand, connectCommand;
-    public void receiveConnectCommand(String command){
+
+    // Needs to send to CentralServer somewhere
+    public void sendConnectCommand(String command) {
         connectCommand = command;
     }
 
-    public void receiveFTPCommand(String command){
+    // Needs to send to CentralServer somewhere
+    public void sendFTPCommand(String command) {
         FTPCommand = command;
     }
 
-    public String[][] sendPeerTable(){
+    public ArrayList<Peer> loadPeerList() {
+        return PeerWrapper.getUserList();
+    }
+
+    public String sendCommandLine() {
         return null;
     }
 
-    public String sendCommandLine(){
-        return null;
-    }
+    public void sendSearchCommand(String command) {
 
-    public void receiveSearchCommand(String command){
-
-        searchCommand = command;
+        /*searchCommand = command;
         DataOutputStream dataToServer = new DataOutputStream(dataSocket.getOutputStream());
-        dataToServer.writeBytes(searchCommand);
+        dataToServer.writeBytes(searchCommand);*/
     }
-    public void receiveSearchResults(){
-        BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-        searchResponse = inData.readLine();
+
+    public void loadSearchResults() {
+        /*BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
+        searchResponse = inData.readLine();*/
     }
 }

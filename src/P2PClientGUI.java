@@ -3,6 +3,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class P2PClientGUI {
@@ -35,7 +37,6 @@ public class P2PClientGUI {
     private DefaultTableModel model;
 
     private P2PClientGUI() {
-        client = new P2PClient();
         JFrame frame = new JFrame("P2P Client");
         speedBox.addItem("T1");
         speedBox.addItem("T3");
@@ -78,26 +79,32 @@ public class P2PClientGUI {
             //need to wait for client to give table
             if (e.getSource() == searchButton){
                 String word = keyword.getText();
-                client.receiveSearchCommand(word);
+                client.sendSearchCommand(word);
                 //might need some fixing
-                String[][] table = {};
-                while (table.equals(null)){
-                    table = client.sendPeerTable();
+                ArrayList<Peer> peers = null;
+                while (peers == null){
+                    peers = client.loadPeerList();
                 }
-                for (String[] row : table){
-                    model.addRow(row);
+                for (Peer peer : peers){
+                    String[] tableRow = new String[] {
+                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
+                    };
+                    model.addRow(tableRow);
                 }
             }
 
             if (e.getSource() == connectButton){
-                String connect = serverHostname.getText() + " " + port.getText() + "\n" + username.getText() + " " + hostname.getText() + " " + speedBox.getSelectedItem().toString() + "\n";
-                client.receiveConnectCommand(connect);
+                String connect = username.getText() + " " + hostname.getText() + " "
+                        + Objects.requireNonNull(speedBox.getSelectedItem()).toString() + System.lineSeparator();
+
+                client = new P2PClient(serverHostname.getText(), Integer.parseInt(port.getText()));
+                client.sendConnectCommand(connect);
             }
 
             //need to wait for client to give command line
             if (e.getSource() == goButton){
                 String comm = command.getText();
-                client.receiveFTPCommand(comm);
+                client.sendFTPCommand(comm);
                 //might need some fixing
                 Scanner reader = new Scanner(client.sendCommandLine());
                 while (reader.hasNext()){
