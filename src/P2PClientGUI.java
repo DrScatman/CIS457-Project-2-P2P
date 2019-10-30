@@ -93,7 +93,7 @@ public class P2PClientGUI {
                 }
             }
 
-            if (e.getSource() == connectButton){
+            if (e.getSource() == connectButton) {
                 String connect = username.getText() + " " + hostname.getText() + " "
                         + Objects.requireNonNull(speedBox.getSelectedItem()).toString() + System.lineSeparator();
 

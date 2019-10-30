@@ -9,6 +9,8 @@ public class P2PClient extends Thread {
     private DataOutputStream out;
     private boolean connectedToCentralServer;
     private String searchCommand, searchResponse, FTPCommand, connectCommand;
+    private FTPClient ftpClient;
+    private static final String FILE_LIST_FILENAME = "filelist.txt";
 
     public P2PClient(String serverHostName, int port) {
         try {
@@ -16,9 +18,11 @@ public class P2PClient extends Thread {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
-
-            this.start();
-        } catch (IOException e) {
+            //TODO:
+            // Connect ftp client or server to central server to "stor" (send) the filelist.txt file
+            //ftpClient = new FTPClient(serverHostName, port);
+            ftpClient.start();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -28,11 +32,14 @@ public class P2PClient extends Thread {
         while (true) {
             try {
                 if (connectCommand != null && !connectCommand.isEmpty()) {
+                    System.out.println("connect " + socket.getInetAddress().getHostAddress());
                     out.writeUTF(connectCommand);
                     connectCommand = null;
                 }
                 else if (!connectedToCentralServer && in.readUTF().toLowerCase().contains("connected")) {
-                    System.out.println("Connected To Central Server");
+                    System.out.println("Connected to " + socket.getInetAddress().getHostAddress());
+                    // Sends file list file to server
+                    //ftpClient.sendCommand("stor: " + FILE_LIST_FILENAME);
                     connectedToCentralServer = true;
                 }
                 else if (connectedToCentralServer && FTPCommand != null && !FTPCommand.isEmpty()) {
