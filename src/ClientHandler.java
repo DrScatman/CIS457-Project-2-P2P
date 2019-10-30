@@ -28,6 +28,10 @@ public class ClientHandler extends Thread{
         processPeerClientData();
     }
 
+    public void startFTP() {
+        this.start();
+    }
+
     @Override
     public void run() {
         try{

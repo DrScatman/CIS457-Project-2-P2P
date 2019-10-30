@@ -31,9 +31,6 @@ public class CentralServer {
 
                 ClientHandler client = new ClientHandler(connectionSocket, readBuffer, out);
                 PeerWrapper.addHandler(client);
-
-                Thread t = new Thread(client);
-                t.start();
             }
 
         } catch (Exception e) {
