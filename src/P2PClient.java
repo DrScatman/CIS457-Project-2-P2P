@@ -7,6 +7,7 @@ public class P2PClient extends Thread {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
+    private boolean connectedToCentralServer;
     private String searchCommand, searchResponse, FTPCommand, connectCommand;
 
     public P2PClient(String serverHostName, int port) {
@@ -30,6 +31,16 @@ public class P2PClient extends Thread {
                     out.writeUTF(connectCommand);
                     connectCommand = null;
                 }
+                else if (!connectedToCentralServer && in.readUTF().toLowerCase().contains("connected")) {
+                    System.out.println("Connected To Central Server");
+                    connectedToCentralServer = true;
+                }
+                else if (connectedToCentralServer && FTPCommand != null && !FTPCommand.isEmpty()) {
+                    System.out.println("Sending: " + FTPCommand + "To Central Server");
+                    out.writeUTF(FTPCommand);
+                    FTPCommand = null;
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -54,7 +65,7 @@ public class P2PClient extends Thread {
     }
 
     public ArrayList<Peer> loadPeerList() {
-        return PeerWrapper.getUserList();
+        return null;
     }
 
     public String sendCommandLine() {

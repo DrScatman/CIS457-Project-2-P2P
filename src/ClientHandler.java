@@ -3,7 +3,7 @@ import java.net.Socket;
 import java.util.StringTokenizer;
 
 
-public class ClientHandler extends Thread{
+public class ClientHandler extends Thread {
     Socket socket;
     String fromClient;
     String clientName;
@@ -12,20 +12,19 @@ public class ClientHandler extends Thread{
     BufferedReader readBuffer;
     DataOutputStream out;
 
-    public ClientHandler(Socket connection) throws Exception{
+    public ClientHandler(Socket connection) throws Exception {
         super();
         this.socket = connection;
         System.out.println("Client connected " + socket.getInetAddress());
     }
 
-    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out) throws Exception{
+    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out) throws Exception {
         super();
         this.socket = connection;
         this.readBuffer = readBuffer;
         this.out = out;
 
         System.out.println("Client connected " + socket.getInetAddress());
-        processPeerClientData();
     }
 
     public void startFTP() {
@@ -34,17 +33,19 @@ public class ClientHandler extends Thread{
 
     @Override
     public void run() {
-        try{
-            while(socket.isConnected()){
-                processRequest();
+        try {
+            processPeerData();
+            while (socket.isConnected()) {
+                processPeerFiles();
+                //processRequest();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Client Disconnected");
         }
 
     }
 
-    private void processPeerClientData() {
+    private void processPeerData() {
         try {
             // First string received contains the username, hostname, and speed for the client
             //in = new DataInputStream(socket.getInputStream());
@@ -56,42 +57,85 @@ public class ClientHandler extends Thread{
             hostName = tokens.nextToken();
             speed = tokens.nextToken();
 
-            System.out.println(clientName + " has connected");
+            out.writeUTF("Successfully Connected To: " + socket.getInetAddress().getHostAddress());
+            Peer peer = new Peer(clientName, hostName, speed);
+            CentralServer.userList.add(peer);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processPeerFiles() {
+        try {
             String files = readBuffer.readLine();
 
             // 404 if no files exist ?
-            if(!files.equals("404")) {
-                tokens = new StringTokenizer(files);
+            if (!files.equals("404")) {
+                StringTokenizer tokens = new StringTokenizer(files);
                 String data = tokens.nextToken();
 
-                if(data.startsWith("200")) {
+                if (data.startsWith("200")) {
                     //Reads in the number of files available for download.
                     data = tokens.nextToken();
                     int numFiles = Integer.parseInt(data);
 
-                    for(int i = 0; i < numFiles; i++) {
+                    for (int i = 0; i < numFiles; i++) {
                         // Second line contains file info?
                         String fileInfo = readBuffer.readLine();
                         tokens = new StringTokenizer(fileInfo);
                         String fileName = tokens.nextToken(" ");
                         String fileDescription = tokens.nextToken();
 
-                        // Peer encapsulates information for the users connection
-                        Peer peer = new Peer(clientName, hostName, speed);
                         // FileData encapsulates information for the file
                         FileData fileData = new FileData(fileName, fileDescription);
 
-                        PeerWrapper.addUser(peer);
-                        PeerWrapper.addFileData(fileData);
+                        CentralServer.fileList.add(fileData);
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+           /* boolean hasNotQuit = true;
+
+            //Parses messages received by the client into a command.
+            do {
+                //data fromClient
+                fromClient = readBuffer.readLine();
+                //if output from client equals -1 quit server.
+                if (fromClient.equals("-1")) {
+                    hasNotQuit = false;
+                } else {
+                    //Central server file description search.
+                    for (FileData data : CentralServer.fileList) {
+                        if (data.getFileDescription().contains(fromClient)) {
+                            String str = speed + " " + clientName + " " + 8080 + " " + data.getFileName() + " "
+                                    + hostName;
+                            //sends string containing file information to be downloaded using load.
+                            out.writeUTF(str);
+                            System.out.println(data.getFileName());
+                        }
+                    }
+                }
+                out.writeUTF("EOF");
+            } while (hasNotQuit);
+
+            //remove file from files  ArrayList.
+            for (int i = 0; i < Centralized_Server.peerData.size(); i++) {
+                if (Centralized_Server.peerData.get(i).hostName == this.hostName) {
+                    Centralized_Server.peerData.remove(i);
+                }
+            }
+            //close connectionSocket
+            this.connectionSocket.close();
+            System.out.println(clientName + "has disconnected!");*/
+        } catch (Exception e) {
+            System.err.println(e);
+            System.exit(1);
         }
+
     }
 
-    private void processRequest() throws Exception{
+    private void processRequest() throws Exception {
         DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -112,7 +156,7 @@ public class ClientHandler extends Thread{
             File folder = new File("C:\\Users\\bunny\\IdeaProjects\\CIS457Proj1");
             String[] files = folder.list();
 
-            for (String file : files){
+            for (String file : files) {
                 dataOutToClient.writeBytes(file);
                 dataOutToClient.writeBytes(" ");
             }
@@ -125,7 +169,7 @@ public class ClientHandler extends Thread{
         }
 
 
-        if (clientCommand.startsWith("retr:")){
+        if (clientCommand.startsWith("retr:")) {
             Socket dataSocket = new Socket(socket.getInetAddress(), port);
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
@@ -135,8 +179,8 @@ public class ClientHandler extends Thread{
 
             //finding our file in directory and sending it
             boolean found = false;
-            for (String file: files){
-                if (file.equals(fileName)){
+            for (String file : files) {
+                if (file.equals(fileName)) {
                     found = true;
                     dataOutToClient.writeBytes("200 OK");
                     dataOutToClient.writeBytes("\n");
@@ -146,7 +190,7 @@ public class ClientHandler extends Thread{
                 }
             }
             //if file is not found send 550
-            if (!found){
+            if (!found) {
                 dataOutToClient.writeBytes("550");
                 dataOutToClient.writeBytes("\n");
             }
@@ -155,7 +199,7 @@ public class ClientHandler extends Thread{
             System.out.println("Data Socket closed");
         }
 
-        if (clientCommand.startsWith("stor:")){
+        if (clientCommand.startsWith("stor:")) {
             Socket dataSocket = new Socket(socket.getInetAddress(), port);
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
@@ -168,8 +212,8 @@ public class ClientHandler extends Thread{
             String[] files = folder.list();
             boolean found = false;
             //check if file is found on server
-            for (String find: files){
-                if (find.equals(fileName)){
+            for (String find : files) {
+                if (find.equals(fileName)) {
                     found = true;
                     dataOutToClient.writeBytes("550");
                     dataOutToClient.writeBytes("\n");
@@ -182,11 +226,11 @@ public class ClientHandler extends Thread{
             }
             String check = dataIn.readLine();
 
-                if (check.equals("200 OK") && !found) {
-                    OutputStream byteWriter = new FileOutputStream(file);
-                    byteWriter.write(dataIn.read());
-                    byteWriter.close();
-                }
+            if (check.equals("200 OK") && !found) {
+                OutputStream byteWriter = new FileOutputStream(file);
+                byteWriter.write(dataIn.read());
+                byteWriter.close();
+            }
 
 
             dataOutToClient.close();
@@ -195,7 +239,7 @@ public class ClientHandler extends Thread{
         }
 
 
-        if (clientCommand.equals("quit:")){
+        if (clientCommand.equals("quit:")) {
             socket.close();
             System.out.println("Client has disconnected");
             return;
@@ -205,11 +249,11 @@ public class ClientHandler extends Thread{
 
 
     //might need bigger buffer depending on file
-    private static void sendBytes(FileInputStream fis, OutputStream os) throws Exception{
+    private static void sendBytes(FileInputStream fis, OutputStream os) throws Exception {
         byte[] buffer = new byte[1024];
         int bytes = 0;
 
-        while ((bytes = fis.read(buffer)) != -1){
+        while ((bytes = fis.read(buffer)) != -1) {
             os.write(buffer, 0, bytes);
         }
     }

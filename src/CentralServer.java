@@ -11,6 +11,11 @@ import java.util.StringTokenizer;
 public class CentralServer {
     //This socket waits for client connections.
     private static ServerSocket welcomeSocket;
+    //peers is an ArrayList of all clients connected to the CentralServer.
+    private static ArrayList<ClientHandler> handlerList = new ArrayList<ClientHandler>();
+    //peerData holds a list of PeerData objects to create a list of all available files across clients.
+    public static ArrayList<Peer> userList = new ArrayList<Peer>();
+    public static ArrayList<FileData> fileList = new ArrayList<FileData>();
 
     public static void main(String[] args) throws IOException {
 
@@ -30,7 +35,8 @@ public class CentralServer {
                 DataOutputStream out = new DataOutputStream(connectionSocket.getOutputStream());
 
                 ClientHandler client = new ClientHandler(connectionSocket, readBuffer, out);
-                PeerWrapper.addHandler(client);
+                handlerList.add(client);
+                client.start();
             }
 
         } catch (Exception e) {
