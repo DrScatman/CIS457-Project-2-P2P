@@ -85,7 +85,7 @@ public class P2PClientGUI {
                 while (peers == null){
                     peers = client.loadPeerList();
                 }
-                for (Peer peer : peers){
+                for (Peer peer : peers) {
                     String[] tableRow = new String[] {
                             peer.getSpeed(), peer.getHostName(), peer.getHostName()
                     };
