@@ -46,8 +46,7 @@ class FTPClient extends Thread{
                 //String sentence = inFromUser.readLine();
 
                 if (sentence.equals("list:")) {
-
-
+                    
                     port = port + 2;
                     outToServer.writeBytes(port + " " + sentence + '\n');
 
