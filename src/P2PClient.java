@@ -19,7 +19,7 @@ public class P2PClient extends Thread {
             out = new DataOutputStream(socket.getOutputStream());
 
             //TODO:
-            // Connect ftp client or/and server to central server to "stor" (send) the filelist.txt file
+            // Connect ftp client or/and server to central server to "stor"(send) the filelist.txt file
             //ftpClient = new FTPClient(serverHostName, port);
             ftpClient.start();
         } catch (Exception e) {

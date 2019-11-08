@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 
@@ -11,6 +13,7 @@ public class ClientHandler extends Thread {
     String speed;
     BufferedReader readBuffer;
     DataOutputStream out;
+    private Peer peer;
 
     public ClientHandler(Socket connection) throws Exception {
         super();
@@ -59,6 +62,7 @@ public class ClientHandler extends Thread {
 
             out.writeUTF("Successfully Connected To: " + socket.getInetAddress().getHostAddress());
             Peer peer = new Peer(clientName, hostName, speed);
+            this.peer = peer;
             CentralServer.userList.add(peer);
 
         } catch (IOException e) {
@@ -80,6 +84,7 @@ public class ClientHandler extends Thread {
                     data = tokens.nextToken();
                     int numFiles = Integer.parseInt(data);
 
+                    HashSet<FileData> clientsFiles = new HashSet<>();
                     for (int i = 0; i < numFiles; i++) {
                         // Second line contains file info?
                         String fileInfo = readBuffer.readLine();
@@ -89,9 +94,10 @@ public class ClientHandler extends Thread {
 
                         // FileData encapsulates information for the file
                         FileData fileData = new FileData(fileName, fileDescription);
-
+                        clientsFiles.add(fileData);
                         CentralServer.fileList.add(fileData);
                     }
+                    CentralServer.map.put(peer, clientsFiles);
                 }
             }
 

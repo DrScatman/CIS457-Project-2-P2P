@@ -5,6 +5,9 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class CentralServer {
     //This socket waits for client connections.
@@ -14,6 +17,7 @@ public class CentralServer {
     //peerData holds a list of PeerData objects to create a list of all available files across clients.
     public static ArrayList<Peer> userList = new ArrayList<Peer>();
     public static ArrayList<FileData> fileList = new ArrayList<FileData>();
+    public static HashMap<Peer, Set<FileData>> map;
 
     public static void main(String[] args) throws IOException {
 
