@@ -27,7 +27,7 @@ class FTPClient extends Thread{
         System.out.println("You are connected to " + serverName);*/
         this.port = port;
         controlSocket = new Socket(serverIp, port);
-        this.start();
+        // Started by caller this.start();
     }
 
     public void sendCommand(String sentence) {
