@@ -16,7 +16,7 @@ public class P2PClient extends Thread {
     private FTPServer ftpServer;
     private ObjectInputStream ois;
     private HashSet<Peer> peerSet;
-    private boolean waitForResponse;
+    private boolean searchCommandSent;
 //
 //    public String getConnectCommand() {
 //        return connectCommand;
@@ -30,10 +30,10 @@ public class P2PClient extends Thread {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
+            //ois = new ObjectInputStream(socket.getInputStream());
 
-//            ftpServer = new FTPServer();
-//            ftpServer.start();
+            ftpServer = new FTPServer();
+            ftpServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +55,8 @@ public class P2PClient extends Thread {
                     // Sends file list file to server
                     //ftpClient.sendCommand("stor: " + FILE_LIST_FILENAME);
 
-                    File folder = new File("C:\\Users\\mille\\eclipse\\java-2018-092\\eclipse");
+                    String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P";
+                    File folder = new File(path);
                     File[] listOfFiles = folder.listFiles();
                     StringBuilder listOfFileNames = new StringBuilder();
 
@@ -94,11 +95,11 @@ public class P2PClient extends Thread {
                 if(searchCommand != null && !searchCommand.isEmpty() ) {
                     System.out.println("Searching for: " + searchCommand);
                     sendSearchCommand(searchCommand);
-                    waitForResponse = true;
+                    searchCommandSent = true;
                     searchCommand = null;
                 }
 
-                if (waitForResponse) {
+                if (searchCommandSent) {
                     int len = in.readByte();
                     while (len > 0) {
                         try {
@@ -108,7 +109,7 @@ public class P2PClient extends Thread {
                             }
                         } catch (ClassNotFoundException ignored) { }
                     }
-                    waitForResponse = false;
+                    searchCommandSent = false;
                 }
 
 
@@ -149,7 +150,6 @@ public class P2PClient extends Thread {
         try {
             searchCommand = "search " + command;
             out.writeBytes(searchCommand);
-            waitForResponse = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
