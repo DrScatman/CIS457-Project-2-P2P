@@ -40,7 +40,7 @@ public class ClientHandler extends Thread {
                 if(readBuffer.ready()) {
                     processPeerData();
                     processPeerFiles();
-//                processRequest();
+                    processSearchRequest();
                 }
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -166,7 +166,9 @@ public class ClientHandler extends Thread {
 
 
     /** Searches for the files the client is requesting **/
-    private HashSet<? extends Object> processRequest() {
+    private HashSet<Peer> processSearchRequest() {
+        HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
+
         try {
             System.out.println("Process");
             System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
@@ -177,7 +179,6 @@ public class ClientHandler extends Thread {
             String searchKey = tokens.nextToken();
 
             if (search.equals("search")) {
-                HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
 
                 for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                     for (FileData file : entry.getValue()) {
@@ -193,7 +194,7 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
         }
 
-        return new HashSet<>();
+        return peersWithMatchingFiles;
     }
 //        DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
 //        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
