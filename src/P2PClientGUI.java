@@ -106,7 +106,6 @@ public class P2PClientGUI {
             if (e.getSource() == searchButton){
                 //client.sendSearchCommand(word);
                 client.searchCommand = keyword.getText();
-                System.out.println(client.searchCommand);
                 //might need some fixing
 //                ArrayList<Peer> peers = null;
 //                while (peers == null){

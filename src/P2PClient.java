@@ -78,7 +78,6 @@ public class P2PClient extends Thread {
                     }
 
                     connectedToCentralServer = true;
-                    // connectedToCentralServer &&
                 }
 
                 if (FTPCommand != null && !FTPCommand.isEmpty()) {
@@ -92,6 +91,8 @@ public class P2PClient extends Thread {
                     sendSearchCommand(searchCommand);
                     searchCommand = null;
                 }
+
+
 
             } catch (IOException e) {
                 e.printStackTrace();
