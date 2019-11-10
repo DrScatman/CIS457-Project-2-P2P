@@ -1,8 +1,6 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 public class ClientHandler extends Thread {
@@ -168,21 +166,34 @@ public class ClientHandler extends Thread {
 
 
     /** Searches for the files the client is requesting **/
-    private void processRequest() {
+    private HashSet<? extends Object> processRequest() {
         try {
             System.out.println("Process");
-//            System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
-//            String keywords = new DataInputStream(socket.getInputStream()).readUTF();
+            System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
+            String keywords = new DataInputStream(socket.getInputStream()).readUTF();
 
-//            StringTokenizer tokens = new StringTokenizer(keywords);
-//            String search = tokens.nextToken();
-//
-//            if (search.equals("search")) {
-//                System.out.println("HERE");
-//            }
+            StringTokenizer tokens = new StringTokenizer(keywords);
+            String search = tokens.nextToken();
+            String searchKey = tokens.nextToken();
+
+            if (search.equals("search")) {
+                HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
+
+                for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
+                    for (FileData file : entry.getValue()) {
+
+                        if (file.getFileDescription().contains(searchKey)) {
+                            peersWithMatchingFiles.add(entry.getKey());
+                        }
+                    }
+                }
+                return peersWithMatchingFiles;
+            }
         } catch(Throwable e) {
             e.printStackTrace();
         }
+
+        return new HashSet<>();
     }
 //        DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
 //        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
