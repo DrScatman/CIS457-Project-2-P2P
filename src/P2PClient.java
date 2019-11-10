@@ -50,7 +50,7 @@ public class P2PClient extends Thread {
                     // Sends file list file to server
                     //ftpClient.sendCommand("stor: " + FILE_LIST_FILENAME);
 
-                    File folder = new File("C:\\Users\\hongsyp\\Desktop\\Files2Share");
+                    File folder = new File("C:\\Users\\mille\\eclipse\\java-2018-092\\eclipse");
                     File[] listOfFiles = folder.listFiles();
                     StringBuilder listOfFileNames = new StringBuilder();
 
