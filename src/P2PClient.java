@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class P2PClient extends Thread {
 
@@ -13,6 +14,8 @@ public class P2PClient extends Thread {
     private String FTPCommand;
     String connectCommand;
     private FTPServer ftpServer;
+    private ObjectInputStream ois;
+    private HashSet<Peer> peerSet;
 //
 //    public String getConnectCommand() {
 //        return connectCommand;
@@ -26,6 +29,7 @@ public class P2PClient extends Thread {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
 
 //            ftpServer = new FTPServer();
 //            ftpServer.start();
@@ -92,6 +96,17 @@ public class P2PClient extends Thread {
                     searchCommand = null;
                 }
 
+                if (connectedToCentralServer) {
+                    int len = in.readByte();
+                    while (len > 0) {
+                        try {
+                            Peer peer = (Peer) ois.readObject();
+                            if (peer != null) {
+                                peerSet.add(peer);
+                            }
+                        } catch (ClassNotFoundException ignored) { }
+                    }
+                }
 
 
             } catch (IOException e) {
@@ -119,8 +134,8 @@ public class P2PClient extends Thread {
         out.writeBytes(FTPCommand);
     }
 
-    public ArrayList<Peer> loadPeerList() {
-        return null;
+    public HashSet<Peer> loadPeerList() {
+        return peerSet;
     }
 
     public String sendCommandLine() {
