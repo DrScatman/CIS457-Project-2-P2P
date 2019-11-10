@@ -25,7 +25,6 @@ public class P2PClient extends Thread {
     private static final String FILE_LIST_FILENAME = "filelist.txt";
 
     public P2PClient(String serverHostName, int port) {
-        connectedToCentralServer = false;
         try {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
