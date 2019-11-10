@@ -13,6 +13,7 @@ public class P2PClient extends Thread {
     private static final String FILE_LIST_FILENAME = "filelist.txt";
 
     public P2PClient(String serverHostName, int port) {
+        connectedToCentralServer = false;
         try {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
@@ -64,6 +65,15 @@ public class P2PClient extends Thread {
     // Needs to send to CentralServer somewhere
     public void sendConnectCommand(String command) {
         connectCommand = command;
+        try {
+            if (connectCommand != null && !connectCommand.isEmpty()) {
+                System.out.println("connect " + socket.getInetAddress().getHostAddress());
+                out.writeUTF(connectCommand);
+                connectCommand = null;
+            }
+        } catch (IOException e) {
+        e.printStackTrace();
+    }
     }
 
     // Needs to send to CentralServer somewhere
@@ -80,10 +90,22 @@ public class P2PClient extends Thread {
     }
 
     public void sendSearchCommand(String command) {
-
-        /*searchCommand = command;
-        DataOutputStream dataToServer = new DataOutputStream(dataSocket.getOutputStream());
-        dataToServer.writeBytes(searchCommand);*/
+        searchCommand = command;
+        try {
+            if (searchCommand != null && !searchCommand.isEmpty()) {
+                System.out.println("search " + socket.getInetAddress().getHostAddress());
+                out.writeUTF(searchCommand);
+                searchCommand = null;
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        //OR
+        //try {
+        //    out.writeBytes(command);
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
     }
 
     public void loadSearchResults() {
