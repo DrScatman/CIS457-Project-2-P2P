@@ -16,6 +16,7 @@ public class P2PClient extends Thread {
     private String searchResponse;
     private String FTPCommand;
     String connectCommand;
+    private FTPServer ftpServer;
 //
 //    public String getConnectCommand() {
 //        return connectCommand;
@@ -29,11 +30,9 @@ public class P2PClient extends Thread {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-//
-//            //TODO:
-//            // Connect ftp client or/and server to central server to "stor"(send) the filelist.txt file
-//            ftpClient = new FTPClient(serverHostName, port);
-//            ftpClient.start();
+
+            ftpServer = new FTPServer();
+            ftpServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,15 +113,6 @@ public class P2PClient extends Thread {
     public void sendConnectCommand(String command) throws IOException {
         connectCommand = command;
         out.writeBytes(connectCommand);
-        try {
-            if (connectCommand != null && !connectCommand.isEmpty()) {
-                System.out.println("connect " + socket.getInetAddress().getHostAddress());
-                out.writeUTF(connectCommand);
-                connectCommand = null;
-            }
-        } catch (IOException e) {
-        e.printStackTrace();
-    }
     }
 
     // Needs to send to CentralServer somewhere
@@ -139,26 +129,13 @@ public class P2PClient extends Thread {
         return null;
     }
 
-    public void sendSearchCommand(String command) throws IOException {
-        searchCommand = "search " + command;
-        out.writeBytes(searchCommand);
     public void sendSearchCommand(String command) {
-        searchCommand = command;
         try {
-            if (searchCommand != null && !searchCommand.isEmpty()) {
-                System.out.println("search " + socket.getInetAddress().getHostAddress());
-                out.writeUTF(searchCommand);
-                searchCommand = null;
-            }
-        }catch (IOException e) {
+            searchCommand = "search " + command;
+            out.writeBytes(searchCommand);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        //OR
-        //try {
-        //    out.writeBytes(command);
-        //} catch (IOException e) {
-        //    e.printStackTrace();
-        //}
     }
 //        DataOutputStream dataToServer = new DataOutputStream(dataSocket.getOutputStream());
 //        dataToServer.writeBytes(searchCommand);

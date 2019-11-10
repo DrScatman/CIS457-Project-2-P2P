@@ -1,14 +1,21 @@
-import java.io.*; 
-import java.net.*;
-import java.util.*;
-class FTPServer {
+import java.net.ServerSocket;
+import java.net.Socket;
 
-	public static void main(String argv[]) throws Exception {
-		ServerSocket welcomeSocket = new ServerSocket(12000);
+class FTPServer extends Thread{
+
+	@Override
+	public void run() {
+		ServerSocket welcomeSocket = null;
+		try {
+			welcomeSocket = new ServerSocket(8080);
+
 		while (true) {
 			Socket connectionSocket = welcomeSocket.accept();
 			ClientHandler handler = new ClientHandler(connectionSocket);
 			handler.start();
+		}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
