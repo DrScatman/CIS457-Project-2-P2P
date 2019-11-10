@@ -1,12 +1,8 @@
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class CentralServer {
@@ -24,6 +20,7 @@ public class CentralServer {
         try {
             welcomeSocket = new ServerSocket(8080);
             System.out.println("Server Started");
+
         } catch (Exception e) {
             System.err.println("Error: Server was not started");
             e.printStackTrace();
@@ -31,19 +28,18 @@ public class CentralServer {
         try {
             while(true) {
                 Socket connectionSocket = welcomeSocket.accept();
-
                 // Establish I/O streams
                 BufferedReader readBuffer = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 DataOutputStream out = new DataOutputStream(connectionSocket.getOutputStream());
-
-                ClientHandler client = new ClientHandler(connectionSocket, readBuffer, out);
+                ClientHandler clientHandler = new ClientHandler(connectionSocket, readBuffer, out);
+                clientHandler.start();
                 //handlerList.add(client);
-                client.start();
             }
 
         } catch (Exception e) {
             System.err.println("Error: Client could not be connected.");
             e.printStackTrace();
+
         } finally {
             try {
                 //In the event of an error close the welcomeSocket.

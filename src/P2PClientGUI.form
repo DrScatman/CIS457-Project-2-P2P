@@ -34,7 +34,7 @@
           <text value="Username:"/>
         </properties>
       </component>
-      <component id="61eab" class="javax.swing.JTextField" binding="username">
+      <component id="61eab" class="javax.swing.JTextField" binding="userText">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -171,12 +171,6 @@
           <text value="Port:"/>
         </properties>
       </component>
-      <component id="9cfed" class="javax.swing.JComboBox" binding="speedBox">
-        <constraints>
-          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-      </component>
       <component id="42120" class="javax.swing.JLabel" binding="speedLabel">
         <constraints>
           <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -199,6 +193,14 @@
         </constraints>
         <properties>
           <text value="Go"/>
+        </properties>
+      </component>
+      <component id="9cfed" class="javax.swing.JComboBox" binding="speedBox">
+        <constraints>
+          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model/>
         </properties>
       </component>
     </children>
