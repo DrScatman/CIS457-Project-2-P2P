@@ -12,6 +12,7 @@ public class ClientHandler extends Thread {
     BufferedReader readBuffer;
     DataOutputStream out;
     private Peer peer;
+    private ObjectOutputStream oos;
     int i = 1;
 
     public ClientHandler(Socket connection) throws Exception {
@@ -43,7 +44,7 @@ public class ClientHandler extends Thread {
                 if (readBuffer.ready()) {
                     processPeerData();
                     processPeerFiles();
-//                processRequest();
+                    processSearchRequest();
                 }
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -201,6 +202,41 @@ public class ClientHandler extends Thread {
             System.out.println(clientName + "has disconnected!");*/
     }
 
+
+
+    /** Searches for the files the client is requesting **/
+    private void processSearchRequest() {
+        HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
+
+        try {
+            System.out.println("Process");
+            System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
+            String keywords = new DataInputStream(socket.getInputStream()).readUTF();
+
+            StringTokenizer tokens = new StringTokenizer(keywords);
+            String search = tokens.nextToken();
+            String searchKey = tokens.nextToken();
+
+            if (search.equals("search")) {
+
+                for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
+                    for (FileData file : entry.getValue()) {
+
+                        if (file.getFileDescription().contains(searchKey)) {
+                            peersWithMatchingFiles.add(entry.getKey());
+                        }
+                    }
+                }
+                oos = new ObjectOutputStream(socket.getOutputStream());
+                out.writeByte(peersWithMatchingFiles.size());
+                for (Peer peer : peersWithMatchingFiles) {
+                    oos.writeObject(peer);
+                }
+            }
+        } catch(Throwable e) {
+            e.printStackTrace();
+        }
+    }
 //        DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
 //        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 //
