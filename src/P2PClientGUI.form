@@ -179,7 +179,7 @@
       </component>
       <component id="42120" class="javax.swing.JLabel" binding="speedLabel">
         <constraints>
-          <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Speed:"/>
@@ -199,6 +199,14 @@
         </constraints>
         <properties>
           <text value="Go"/>
+        </properties>
+      </component>
+      <component id="85abd" class="javax.swing.JButton" binding="refreshButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Refresh"/>
         </properties>
       </component>
     </children>
