@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Observable;
 import java.util.Scanner;
 
 public class P2PClientGUI {
@@ -71,6 +72,7 @@ public class P2PClientGUI {
         connectButton.addActionListener(buttonListener);
         goButton.addActionListener(buttonListener);
 
+        refreshButton.addActionListener(buttonListener);
     }
 
     public static void main(String[] args) {
@@ -135,6 +137,25 @@ public class P2PClientGUI {
                 while (reader.hasNext()){
                     command.setText(reader.next());
                 }
+            }
+
+            if (e.getSource() == refreshButton){
+                String word = keyword.getText();
+                client.sendSearchCommand(word);
+                //might need some fixing
+                model.setRowCount(0);
+                ArrayList<Peer> peers = null;
+                while (peers == null){
+                    peers = client.loadPeerList();
+                }
+                for (Peer peer : peers) {
+                    String[] tableRow = new String[] {
+                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
+                    };
+                    model.addRow(tableRow);
+                }
+                model.fireTableDataChanged();
+                hostsTable.setModel(model);
             }
         }
     }
