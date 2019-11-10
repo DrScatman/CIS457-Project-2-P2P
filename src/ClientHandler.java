@@ -12,6 +12,7 @@ public class ClientHandler extends Thread {
     BufferedReader readBuffer;
     DataOutputStream out;
     private Peer peer;
+    private ObjectOutputStream oos;
     int i = 1;
 
     public ClientHandler(Socket connection) throws Exception {
@@ -166,7 +167,7 @@ public class ClientHandler extends Thread {
 
 
     /** Searches for the files the client is requesting **/
-    private HashSet<Peer> processSearchRequest() {
+    private void processSearchRequest() {
         HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
 
         try {
@@ -188,13 +189,15 @@ public class ClientHandler extends Thread {
                         }
                     }
                 }
-                return peersWithMatchingFiles;
+                oos = new ObjectOutputStream(socket.getOutputStream());
+                out.writeByte(peersWithMatchingFiles.size());
+                for (Peer peer : peersWithMatchingFiles) {
+                    oos.writeObject(peer);
+                }
             }
         } catch(Throwable e) {
             e.printStackTrace();
         }
-
-        return peersWithMatchingFiles;
     }
 //        DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
 //        BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
