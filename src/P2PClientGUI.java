@@ -6,10 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Observable;
-import java.util.Scanner;
+import java.util.*;
 
 public class P2PClientGUI {
     /** Labels **/
@@ -64,7 +61,7 @@ public class P2PClientGUI {
         }
 
         //setting defaults because I'm lazy
-        port.setText("8080");
+        port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
 
@@ -108,16 +105,16 @@ public class P2PClientGUI {
                 client.searchCommand = keyword.getText();
                 System.out.println(client.searchCommand);
                 //might need some fixing
-//                ArrayList<Peer> peers = null;
-//                while (peers == null){
-//                    peers = client.loadPeerList();
-//                }
-//                for (Peer peer : peers) {
-//                    String[] tableRow = new String[] {
-//                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
-//                    };
-//                    model.addRow(tableRow);
-//                }
+                HashSet<Peer> peerSet = null;
+                while (peerSet == null){
+                    peerSet = client.loadPeerList();
+                }
+                for (Peer peer : peerSet) {
+                    String[] tableRow = new String[] {
+                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
+                    };
+                    model.addRow(tableRow);
+                }
             }
 
             if (e.getSource() == connectButton) {
@@ -145,11 +142,10 @@ public class P2PClientGUI {
                 client.sendSearchCommand(word);
                 //might need some fixing
                 model.setRowCount(0);
-                ArrayList<Peer> peers = null;
-                while (peers == null){
-                    peers = client.loadPeerList();
-                }
-                for (Peer peer : peers) {
+                HashSet<Peer> peerSet = null;
+                peerSet = client.loadPeerList();
+
+                for (Peer peer : peerSet) {
                     String[] tableRow = new String[] {
                             peer.getSpeed(), peer.getHostName(), peer.getHostName()
                     };
