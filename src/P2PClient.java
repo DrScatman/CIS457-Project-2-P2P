@@ -16,6 +16,7 @@ public class P2PClient extends Thread {
     private FTPServer ftpServer;
     private ObjectInputStream ois;
     private HashSet<Peer> peerSet;
+    private boolean waitForResponse;
 //
 //    public String getConnectCommand() {
 //        return connectCommand;
@@ -93,10 +94,11 @@ public class P2PClient extends Thread {
                 if(searchCommand != null && !searchCommand.isEmpty() ) {
                     System.out.println("Searching for: " + searchCommand);
                     sendSearchCommand(searchCommand);
+                    waitForResponse = true;
                     searchCommand = null;
                 }
 
-                if (connectedToCentralServer) {
+                if (waitForResponse) {
                     int len = in.readByte();
                     while (len > 0) {
                         try {
@@ -106,6 +108,7 @@ public class P2PClient extends Thread {
                             }
                         } catch (ClassNotFoundException ignored) { }
                     }
+                    waitForResponse = false;
                 }
 
 
@@ -146,6 +149,7 @@ public class P2PClient extends Thread {
         try {
             searchCommand = "search " + command;
             out.writeBytes(searchCommand);
+            waitForResponse = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
