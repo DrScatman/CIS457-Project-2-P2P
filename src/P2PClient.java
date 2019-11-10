@@ -16,6 +16,7 @@ public class P2PClient extends Thread {
     private String searchResponse;
     private String FTPCommand;
     String connectCommand;
+    private FTPServer ftpServer;
 //
 //    public String getConnectCommand() {
 //        return connectCommand;
@@ -29,11 +30,9 @@ public class P2PClient extends Thread {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-//
-//            //TODO:
-//            // Connect ftp client or/and server to central server to "stor"(send) the filelist.txt file
-//            ftpClient = new FTPClient(serverHostName, port);
-//            ftpClient.start();
+
+            ftpServer = new FTPServer();
+            ftpServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -130,9 +129,13 @@ public class P2PClient extends Thread {
         return null;
     }
 
-    public void sendSearchCommand(String command) throws IOException {
-        searchCommand = "search " + command;
-        out.writeBytes(searchCommand);
+    public void sendSearchCommand(String command) {
+        try {
+            searchCommand = "search " + command;
+            out.writeBytes(searchCommand);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 //        DataOutputStream dataToServer = new DataOutputStream(dataSocket.getOutputStream());
 //        dataToServer.writeBytes(searchCommand);

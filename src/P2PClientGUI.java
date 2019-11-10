@@ -27,7 +27,7 @@ public class P2PClientGUI {
     /** Textfields **/
     private JTextField serverHostname;
     private JTextField port;
-    private JTextField userText;
+    private JTextField username;
     private JTextField hostname;
     private JTextField keyword;
     private JTextField command;
@@ -44,6 +44,7 @@ public class P2PClientGUI {
     private JPanel mainPanel;
     private JScrollPane commandPane;
     private JScrollPane tablePane;
+    private JButton refreshButton;
 
     /** Instances **/
     public  P2PClient client;
@@ -65,7 +66,7 @@ public class P2PClientGUI {
         //setting defaults because I'm lazy
         port.setText("8080");
         serverHostname.setText("localhost");
-        userText.setText("user");
+        username.setText("user");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
@@ -120,7 +121,7 @@ public class P2PClientGUI {
             }
 
             if (e.getSource() == connectButton) {
-                String connect = userText.getText() + " " + hostname.getText() + " "
+                String connect = username.getText() + " " + hostname.getText() + " "
                         + Objects.requireNonNull(speedBox.getSelectedItem()).toString() + System.lineSeparator();
 
                 client = new P2PClient(serverHostname.getText(), Integer.parseInt(port.getText()));

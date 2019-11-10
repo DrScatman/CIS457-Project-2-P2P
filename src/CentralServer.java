@@ -18,7 +18,7 @@ public class CentralServer {
     public static void main(String[] args) throws IOException {
 
         try {
-            welcomeSocket = new ServerSocket(8080);
+            welcomeSocket = new ServerSocket(8081);
             System.out.println("Server Started");
 
         } catch (Exception e) {
