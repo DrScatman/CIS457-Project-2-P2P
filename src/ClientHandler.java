@@ -34,11 +34,14 @@ public class ClientHandler extends Thread {
 //        this.start();
 //    }
 
+    /**
+     * add disconnect
+     **/
     @Override
     public void run() {
         while (socket.isConnected()) {
             try {
-                if(readBuffer.ready()) {
+                if (readBuffer.ready()) {
                     processPeerData();
                     processPeerFiles();
                     processSearchRequest();
@@ -49,34 +52,36 @@ public class ClientHandler extends Thread {
         }
     }
 
-    /** add IP for users **/
+    /**
+     * add IP for users
+     **/
     private void processPeerData() {
         try {
             // First string received contains the username, hostname, and speed for the client
-            if(socket.getInputStream() != null ) {
-                //fromClient = new DataInputStream(socket.getInputStream()).readUTF();
-                fromClient = readBuffer.readLine();
-                System.out.println(fromClient);
-            }
+            fromClient = readBuffer.readLine();
 
             // Delimited with spaces
             StringTokenizer tokens = new StringTokenizer(fromClient);
+
             //tokens.nextToken();
             clientName = tokens.nextToken();
             hostName = tokens.nextToken();
             speed = tokens.nextToken();
 
             out.writeUTF("Successfully connected to host: " + socket.getInetAddress().getHostAddress());
-            Peer peer = new Peer(clientName, hostName, speed);
+            Peer peer = new Peer(clientName, hostName, speed, socket.getRemoteSocketAddress().toString());
             this.peer = peer;
             CentralServer.userList.add(peer);
-            System.out.println("User: " + peer.getHostUserName() + " has joined. Total users: " + CentralServer.userList.size());
+            System.out.println("User: " + peer.getHostUserName() + " @ " + peer.getIpAddress() + " has joined. Total users: " + CentralServer.userList.size());
 
         } catch (Throwable e) {
             System.out.println("Process Peer Data Error");
         }
     }
 
+    /**
+     * if peer for file exists then add it to that peer's list of files, else create a new peer
+     **/
     private void processPeerFiles() {
         try {
             //String files = new DataInputStream(socket.getInputStream()).readUTF();
@@ -97,7 +102,6 @@ public class ClientHandler extends Thread {
                     while (tokens.hasMoreTokens()) {
                         fileName = tokens.nextToken();
                         String[] fileTemp = fileName.split("\\W");
-                        //fileDescription = fileTemp[1];
                         fileData = new FileData(fileName, fileTemp);
                         CentralServer.fileList.add(fileData);
                         System.out.println("User: " + this.peer.getHostUserName() + " Added -> " + fileData.toString());
@@ -110,14 +114,46 @@ public class ClientHandler extends Thread {
             }
         } catch (Throwable e) {
             System.out.println("Process Peer File Error");
-
         }
-
     }
 
-    //int numFiles = Integer.parseInt(data);
+    /**
+     * Searches for the files the client is requesting
+     **/
+    private HashSet<? extends Object> processRequest() {
+        try {
+            System.out.println("Process");
+            System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
+            String keywords = new DataInputStream(socket.getInputStream()).readUTF();
 
-    // HashSet<FileData> clientsFiles = new HashSet<>();
+            StringTokenizer tokens = new StringTokenizer(keywords);
+            String search = tokens.nextToken();
+            String searchKey = tokens.nextToken();
+
+            if (search.equals("search")) {
+                HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
+
+                for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
+                    for (FileData file : entry.getValue()) {
+
+                        if (file.getFileDescription().contains(searchKey)) {
+                            peersWithMatchingFiles.add(entry.getKey());
+                        }
+                    }
+                }
+                return peersWithMatchingFiles;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        return new HashSet<>();
+    }
+
+    public void disconnectPeer() {
+        //int numFiles = Integer.parseInt(data);
+
+        // HashSet<FileData> clientsFiles = new HashSet<>();
 //                    for (int i = 0; i < numFiles; i++) {
 //                        // Second line contains file info?
 //                        String fileInfo = readBuffer.readLine();
@@ -126,11 +162,11 @@ public class ClientHandler extends Thread {
 //                        String fileDescription = tokens.nextToken();
 //
 //                        // FileData encapsulates information for the+ file
-    //FileData fileData = new FileData(fileName, fileDescription);
+        //FileData fileData = new FileData(fileName, fileDescription);
 //
 //                        CentralServer.fileList.add(fileData);
 //                    }
-    //CentralServer.map.put(peer, clientsFiles);
+        //CentralServer.map.put(peer, clientsFiles);
            /* boolean hasNotQuit = true;
 
             //Parses messages received by the client into a command.
@@ -164,6 +200,8 @@ public class ClientHandler extends Thread {
             //close connectionSocket
             this.connectionSocket.close();
             System.out.println(clientName + "has disconnected!");*/
+    }
+
 
 
     /** Searches for the files the client is requesting **/
@@ -307,8 +345,6 @@ public class ClientHandler extends Thread {
 //            System.out.println("Client has disconnected");
 //            return;
 //        }
-
-
 
 
     //might need bigger buffer depending on file
