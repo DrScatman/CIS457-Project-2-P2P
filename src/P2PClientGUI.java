@@ -2,8 +2,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -11,33 +12,41 @@ import java.util.Observable;
 import java.util.Scanner;
 
 public class P2PClientGUI {
-    private JLabel connectionLabel;
+    /** Labels **/
     private JLabel serverHostnameLabel;
-    private JTextField serverHostname;
+    private JLabel connectionLabel;
     private JLabel portLabel;
-    private JTextField port;
-    private JButton connectButton;
     private JLabel usernameLabel;
-    private JTextField username;
     private JLabel hostnameLabel;
-    private JTextField hostname;
     private JLabel speedLabel;
-    private JComboBox<String> speedBox;
     private JLabel searchLabel;
     private JLabel keywordLabel;
-    private JTextField keyword;
-    private JButton searchButton;
-    private JTable hostsTable;
     private JLabel ftpLabel;
     private JLabel commandLabel;
+
+    /** Textfields **/
+    private JTextField serverHostname;
+    private JTextField port;
+    private JTextField userText;
+    private JTextField hostname;
+    private JTextField keyword;
     private JTextField command;
+
+    /** Buttons **/
+    private JButton connectButton;
+    private JButton searchButton;
     private JButton goButton;
+
+    /** Everything else **/
+    private JComboBox<String> speedBox;
+    private JTable hostsTable;
     private JTextArea commandLineArea;
     private JPanel mainPanel;
     private JScrollPane commandPane;
     private JScrollPane tablePane;
-    private JButton refreshButton;
-    private P2PClient client;
+
+    /** Instances **/
+    public  P2PClient client;
     private DefaultTableModel model;
 
     private P2PClientGUI() {
@@ -46,22 +55,33 @@ public class P2PClientGUI {
         speedBox.addItem("T3");
         speedBox.addItem("Ethernet");
         speedBox.addItem("Modem");
+
         try {
             hostname.setText(InetAddress.getLocalHost().getHostName() + "/" + InetAddress.getLocalHost().getHostAddress());
         } catch (Exception e){
             System.out.println(e);
         }
+
+        //setting defaults because I'm lazy
+        port.setText("8080");
+        serverHostname.setText("localhost");
+        userText.setText("user");
+
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
         connectButton.addActionListener(buttonListener);
         goButton.addActionListener(buttonListener);
+
         refreshButton.addActionListener(buttonListener);
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("P2PClientGUI");
         frame.setContentPane(new P2PClientGUI().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        WindowListener windowListener = new WindowListener();
+
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(windowListener);
         frame.pack();
         frame.setVisible(true);
         //constantly update table and panel
@@ -83,35 +103,35 @@ public class P2PClientGUI {
 
             //need to wait for client to give table
             if (e.getSource() == searchButton){
-                String word = keyword.getText();
-                client.sendSearchCommand(word);
+                //client.sendSearchCommand(word);
+                client.searchCommand = keyword.getText();
+                System.out.println(client.searchCommand);
                 //might need some fixing
-                ArrayList<Peer> peers = null;
-                while (peers == null){
-                    peers = client.loadPeerList();
-                }
-                for (Peer peer : peers) {
-                    String[] tableRow = new String[] {
-                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
-                    };
-                    model.addRow(tableRow);
-                }
-                model.fireTableDataChanged();
-                hostsTable.setModel(model);
+//                ArrayList<Peer> peers = null;
+//                while (peers == null){
+//                    peers = client.loadPeerList();
+//                }
+//                for (Peer peer : peers) {
+//                    String[] tableRow = new String[] {
+//                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
+//                    };
+//                    model.addRow(tableRow);
+//                }
             }
 
             if (e.getSource() == connectButton) {
-                String connect = username.getText() + " " + hostname.getText() + " "
+                String connect = userText.getText() + " " + hostname.getText() + " "
                         + Objects.requireNonNull(speedBox.getSelectedItem()).toString() + System.lineSeparator();
 
                 client = new P2PClient(serverHostname.getText(), Integer.parseInt(port.getText()));
-                client.sendConnectCommand(connect);
+                client.connectCommand = connect;
+                client.start();
             }
 
             //need to wait for client to give command line
             if (e.getSource() == goButton){
                 String comm = command.getText();
-                client.sendFTPCommand(comm);
+                //client.sendFTPCommand(comm);
                 //might need some fixing
                 Scanner reader = new Scanner(client.sendCommandLine());
                 while (reader.hasNext()){
@@ -137,6 +157,17 @@ public class P2PClientGUI {
                 model.fireTableDataChanged();
                 hostsTable.setModel(model);
             }
+        }
+    }
+
+    public static class WindowListener extends WindowAdapter {
+
+        //Figure out how to close the socket connection when closing GUI
+        @Override
+        public void windowClosing(WindowEvent e) {
+            System.out.println("Closing");
+
+            e.getWindow().dispose();
         }
     }
 }
