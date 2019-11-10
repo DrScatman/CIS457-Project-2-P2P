@@ -20,6 +20,11 @@ public class P2PClientGUI {
     private JLabel keywordLabel;
     private JLabel ftpLabel;
     private JLabel commandLabel;
+    private JLabel FileInfoLabel;
+    private JLabel fileNamesLabel;
+    private JComboBox comboBox1;
+    private JLabel descriptionLabel;
+    private JTextField descriptionBox;
 
     /** Textfields **/
     private JTextField serverHostname;
