@@ -39,10 +39,11 @@ public class ClientHandler extends Thread {
     public void run() {
         while (socket.isConnected()) {
             try {
-                processPeerData();
-                processPeerFiles();
-                //processRequest();
-                System.out.println(socket.isConnected() + " 1");
+                if(readBuffer.ready()) {
+                    processPeerData();
+                    processPeerFiles();
+//                processRequest();
+                }
             } catch (Throwable e) {
                 e.printStackTrace();
             }

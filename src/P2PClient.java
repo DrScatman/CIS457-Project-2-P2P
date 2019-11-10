@@ -31,8 +31,8 @@ public class P2PClient extends Thread {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
-            ftpServer = new FTPServer();
-            ftpServer.start();
+//            ftpServer = new FTPServer();
+//            ftpServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,7 +59,7 @@ public class P2PClient extends Thread {
                     StringBuilder listOfFileNames = new StringBuilder();
 
                     try {
-                        if (listOfFiles.length > 0) {
+                        if (listOfFiles.length > 0 ) {
                             listOfFileNames.append("200 ");
 
                             for (File file : listOfFiles) {
@@ -72,7 +72,8 @@ public class P2PClient extends Thread {
                             listOfFileNames.append("404");
                         }
 
-                        out.writeUTF(listOfFileNames.toString());
+                        listOfFileNames.append("\r\n");
+                        out.writeBytes(listOfFileNames.toString());
 
                     System.out.println("Files sent to:  " + socket.getInetAddress().getHostAddress());
                     }
@@ -118,7 +119,7 @@ public class P2PClient extends Thread {
     // Needs to send to CentralServer somewhere
     public void sendFTPCommand(String command) throws IOException {
         FTPCommand = command;
-        out.writeUTF(FTPCommand);
+        out.writeBytes(FTPCommand);
     }
 
     public ArrayList<Peer> loadPeerList() {

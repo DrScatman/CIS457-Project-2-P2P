@@ -64,7 +64,7 @@ public class P2PClientGUI {
         }
 
         //setting defaults because I'm lazy
-        port.setText("8080");
+        port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
 
