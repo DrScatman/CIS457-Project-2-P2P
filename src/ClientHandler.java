@@ -84,9 +84,9 @@ public class ClientHandler extends Thread {
             out.writeUTF("Successfully connected to host: " + socket.getInetAddress().getHostAddress());
             Peer peer = new Peer(clientName, hostName, speed, socket.getRemoteSocketAddress().toString());
             this.peer = peer;
-            Set<FileData> fileData = null;
+            HashSet<FileData> fileData = new HashSet<FileData>();
             CentralServer.map.put(this.peer, fileData);
-            System.out.println("User: " + peer.getHostUserName() + " @ " + peer.getIpAddress() + " has joined. Total users: " + CentralServer.userList.size());
+            System.out.println("User: " + peer.getHostUserName() + " @ " + peer.getIpAddress() + " has joined. Total users: " + CentralServer.map.size());
 
         } catch (Throwable e) {
             System.out.println("Process Peer Data Error");
@@ -110,7 +110,9 @@ public class ClientHandler extends Thread {
 
                 fileData = new FileData(fileName, fileDescription);
                 System.out.println("User: " + this.peer.getHostUserName() + " Added -> " + fileData.toString());
-                CentralServer.map.get(this.peer).add(fileData);
+                Set<FileData> fd = CentralServer.map.get(this.peer);
+                fd.add(fileData);
+//                CentralServer.map.get(this.peer).add(fileData);
                 System.out.println(CentralServer.map.get(this.peer).size());
             }
         } catch (Exception e) {

@@ -17,7 +17,6 @@ public class FileData {
         return fileDescription;
     }
 
-
     @Override
     public String toString() {
         StringBuilder fileDesc = new StringBuilder();

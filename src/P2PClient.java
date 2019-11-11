@@ -82,8 +82,6 @@ public class P2PClient extends Thread {
                     }
                     searchCommandSent = false;
                 }
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
