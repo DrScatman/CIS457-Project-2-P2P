@@ -151,6 +151,7 @@ public class P2PClientGUI extends Component {
                     });
                 }
             }
+            // connects
 
             if (e.getSource() == sendFileButton) {
                 System.out.println("Sending new file...");
@@ -165,15 +166,18 @@ public class P2PClientGUI extends Component {
             if (e.getSource() == connectButton) {
                 if (connectButton.getText().equals("Connect")) {
                     connectButton.setText("Disconnect");
+                    String connect = username.getText() + " " + hostname.getText() + " "
+                            + Objects.requireNonNull(speedBox.getSelectedItem()).toString() + System.lineSeparator();
+
+                    client = new P2PClient(serverHostname.getText(), Integer.parseInt(port.getText()));
+                    client.connectCommand = connect;
+                    client.start();
                 } else {
                     connectButton.setText("Connect");
+                    client.connectCommand = "quit:";
+                    client.stop();
                 }
-                String connect = username.getText() + " " + hostname.getText() + " "
-                        + Objects.requireNonNull(speedBox.getSelectedItem()).toString() + System.lineSeparator();
 
-                client = new P2PClient(serverHostname.getText(), Integer.parseInt(port.getText()));
-                client.connectCommand = connect;
-                client.start();
             }
 
             //need to wait for client to give command line
