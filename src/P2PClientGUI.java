@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.Arrays;
@@ -42,7 +42,6 @@ public class P2PClientGUI extends Component {
     private JButton searchButton;
     private JButton goButton;
 
-
     /** Everything else **/
     private JComboBox<String> speedBox;
     private JComboBox<String> fileNamesBox;
@@ -55,7 +54,7 @@ public class P2PClientGUI extends Component {
     private JButton findMyFilesButton;
 
     /** Instances **/
-    private P2PClient client;
+    public  P2PClient client;
     private DefaultTableModel model;
 
     public P2PClientGUI() {
@@ -64,8 +63,6 @@ public class P2PClientGUI extends Component {
         speedBox.addItem("T3");
         speedBox.addItem("Ethernet");
         speedBox.addItem("Modem");
-
-
 
         try {
             hostname.setText(InetAddress.getLocalHost().getHostName() + "/" + InetAddress.getLocalHost().getHostAddress());
@@ -106,7 +103,7 @@ public class P2PClientGUI extends Component {
         hostsTable = new JTable(model);
     }
 
-    private class ButtonListener extends Component implements ActionListener {
+    private class ButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -115,7 +112,6 @@ public class P2PClientGUI extends Component {
             if (e.getSource() == searchButton){
                 //client.sendSearchCommand(word);
                 client.searchCommand = keyword.getText();
-                System.out.println(client.searchCommand);
                 //might need some fixing
                 HashSet<Peer> peerSet = null;
                 while (peerSet == null){

@@ -33,7 +33,6 @@ public class CentralServer {
                 DataOutputStream out = new DataOutputStream(connectionSocket.getOutputStream());
                 ClientHandler clientHandler = new ClientHandler(connectionSocket, readBuffer, out);
                 clientHandler.start();
-                //handlerList.add(client);
             }
 
         } catch (Exception e) {

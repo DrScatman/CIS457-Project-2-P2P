@@ -17,6 +17,7 @@ public class P2PClient extends Thread {
     private FTPServer ftpServer;
     private ObjectInputStream ois;
     private HashSet<Peer> peerSet;
+    private boolean searchCommandSent;
 //
 //    public String getConnectCommand() {
 //        return connectCommand;
@@ -30,10 +31,10 @@ public class P2PClient extends Thread {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
+            //ois = new ObjectInputStream(socket.getInputStream());
 
-//            ftpServer = new FTPServer();
-//            ftpServer.start();
+            ftpServer = new FTPServer();
+            ftpServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +56,8 @@ public class P2PClient extends Thread {
                     // Sends file list file to server
                     //ftpClient.sendCommand("stor: " + FILE_LIST_FILENAME);
 
-                    File folder = new File("C:\\Users\\hongsyp\\Desktop\\Files2Share");
+                    String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P";
+                    File folder = new File(path);
                     File[] listOfFiles = folder.listFiles();
                     StringBuilder listOfFileNames = new StringBuilder();
 
@@ -85,7 +87,6 @@ public class P2PClient extends Thread {
                     }
 
                     connectedToCentralServer = true;
-                    // connectedToCentralServer &&
                 }
 
                 if (FTPCommand != null && !FTPCommand.isEmpty()) {
@@ -97,20 +98,25 @@ public class P2PClient extends Thread {
                 if(searchCommand != null && !searchCommand.isEmpty() ) {
                     System.out.println("Searching for: " + searchCommand);
                     sendSearchCommand(searchCommand);
+                    searchCommandSent = true;
                     searchCommand = null;
                 }
 
-                if (connectedToCentralServer) {
-                    try {
-                        int len = in.readByte();
-                        Peer peer = (Peer) ois.readObject();
-                        if (peer != null && len > 0) {
-                            peerSet.add(peer);
-                        }
-                    } catch (Exception ignored) {}
+                if (searchCommandSent) {
+                    int len = in.readByte();
+                    while (len > 0) {
+                        try {
+                            Peer peer = (Peer) ois.readObject();
+                            if (peer != null) {
+                                peerSet.add(peer);
+                            }
+                        } catch (ClassNotFoundException ignored) { }
+                    }
+                    searchCommandSent = false;
                 }
 
-            } catch (Exception e) {
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
