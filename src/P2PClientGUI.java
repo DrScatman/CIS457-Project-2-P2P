@@ -174,7 +174,8 @@ public class P2PClientGUI extends Component {
                     client.start();
                 } else {
                     connectButton.setText("Connect");
-
+                    client.connectCommand = "quit:";
+                    client.stop();
                 }
 
             }
