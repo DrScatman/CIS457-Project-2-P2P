@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class P2PClient extends Thread {
 
@@ -57,6 +58,8 @@ public class P2PClient extends Thread {
                     File folder = new File("C:\\Users\\hongsyp\\Desktop\\Files2Share");
                     File[] listOfFiles = folder.listFiles();
                     StringBuilder listOfFileNames = new StringBuilder();
+
+
 
                     try {
                         if (listOfFiles.length > 0 ) {
