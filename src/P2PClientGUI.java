@@ -5,13 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 
 public class P2PClientGUI extends Component {
     /** Labels **/
@@ -29,7 +30,7 @@ public class P2PClientGUI extends Component {
     private JLabel fileNamesLabel;
     private JLabel descriptionLabel;
 
-    /** Textfields **/
+    /** Text Fields/Areas **/
     private JTextField serverHostname;
     private JTextField port;
     private JTextField username;
@@ -37,22 +38,25 @@ public class P2PClientGUI extends Component {
     private JTextField keyword;
     private JTextField command;
     private JTextField description;
+    private JTextArea commandLineArea;
 
     /** Buttons **/
     private JButton connectButton;
     private JButton searchButton;
     private JButton goButton;
+    private JButton refreshButton;
+    private JButton findMyFilesButton;
+    private JButton sendFileButton;
 
-    /** Everything else **/
+    /** Combo Boxes**/
     private JComboBox<String> speedBox;
     private JComboBox<String> fileNamesBox;
+
+    /** Everything else**/
     private JTable hostsTable;
-    private JTextArea commandLineArea;
     private JPanel mainPanel;
     private JScrollPane commandPane;
     private JScrollPane tablePane;
-    private JButton refreshButton;
-    private JButton findMyFilesButton;
 
     /** Instances **/
     public  P2PClient client;
@@ -75,13 +79,15 @@ public class P2PClientGUI extends Component {
         port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
+        description.setText("Desc numbertwo");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
         connectButton.addActionListener(buttonListener);
         goButton.addActionListener(buttonListener);
-
+        findMyFilesButton.addActionListener(buttonListener);
         refreshButton.addActionListener(buttonListener);
+        sendFileButton.addActionListener(buttonListener);
     }
 
     public static void main(String[] args) {
@@ -130,7 +136,7 @@ public class P2PClientGUI extends Component {
 
             //Handle open button action.
             if (e.getSource() == findMyFilesButton) {
-                JFileChooser fc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                JFileChooser fc = new JFileChooser(System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P");
                 fc.setDialogTitle("Multiple file selection:");
                 fc.setMultiSelectionEnabled(true);
                 fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -146,6 +152,17 @@ public class P2PClientGUI extends Component {
                 }
             }
             // connects
+
+            if (e.getSource() == sendFileButton) {
+                System.out.println("Sending new file...");
+                client.newFileCommand = Objects.requireNonNull(fileNamesBox.getSelectedItem()).toString() + " " + description.getText();
+                try {
+                    client.sendNewFileCommand(client.newFileCommand);
+                } catch (Exception ex) {
+                    System.out.println("No files found.");
+                }
+            }
+
             if (e.getSource() == connectButton) {
                 if (connectButton.getText().equals("Connect")) {
                     connectButton.setText("Disconnect");

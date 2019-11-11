@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="P2PClientGUI">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="12" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="11" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="5" left="5" bottom="5" right="5"/>
     <constraints>
-      <xy x="20" y="20" width="853" height="577"/>
+      <xy x="20" y="20" width="884" height="577"/>
     </constraints>
     <properties>
       <foreground color="-1251655"/>
@@ -20,7 +20,7 @@
       </component>
       <component id="f63c" class="javax.swing.JTextField" binding="serverHostname">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="1" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -36,7 +36,7 @@
       </component>
       <component id="61eab" class="javax.swing.JTextField" binding="username">
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -44,7 +44,7 @@
       </component>
       <component id="11cb9" class="javax.swing.JLabel" binding="hostnameLabel">
         <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Hostname:"/>
@@ -52,24 +52,7 @@
       </component>
       <component id="b5e4" class="javax.swing.JTextField" binding="hostname">
         <constraints>
-          <grid row="2" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
-      <component id="ad743" class="javax.swing.JLabel" binding="keywordLabel">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <enabled value="true"/>
-          <text value="Keyword: "/>
-        </properties>
-      </component>
-      <component id="cae37" class="javax.swing.JTextField" binding="keyword">
-        <constraints>
-          <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="2" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -77,7 +60,7 @@
       </component>
       <component id="af23c" class="javax.swing.JLabel" binding="commandLabel">
         <constraints>
-          <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Enter Command:"/>
@@ -85,50 +68,15 @@
       </component>
       <component id="63847" class="javax.swing.JTextField" binding="command">
         <constraints>
-          <grid row="10" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="9" column="1" row-span="1" col-span="7" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
         <properties/>
       </component>
-      <component id="ab7c6" class="javax.swing.JLabel" binding="connectionLabel">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <foreground color="-14924545"/>
-          <text value="Connection"/>
-        </properties>
-      </component>
-      <component id="87606" class="javax.swing.JLabel" binding="searchLabel">
-        <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <foreground color="-14924545"/>
-          <text value="Search"/>
-        </properties>
-      </component>
-      <component id="14048" class="javax.swing.JLabel" binding="ftpLabel">
-        <constraints>
-          <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <foreground color="-14924545"/>
-          <text value="FTP"/>
-        </properties>
-      </component>
-      <component id="dde6d" class="javax.swing.JButton" binding="searchButton" default-binding="true">
-        <constraints>
-          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Search"/>
-        </properties>
-      </component>
       <scrollpane id="a01ea" binding="commandPane">
         <constraints>
-          <grid row="11" column="0" row-span="1" col-span="7" vsize-policy="0" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="10" column="0" row-span="1" col-span="9" vsize-policy="0" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="-1" height="150"/>
           </grid>
         </constraints>
@@ -143,7 +91,7 @@
       </scrollpane>
       <scrollpane id="4383a" binding="tablePane">
         <constraints>
-          <grid row="8" column="0" row-span="1" col-span="7" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="7" column="0" row-span="1" col-span="9" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="-1" height="150"/>
           </grid>
         </constraints>
@@ -158,61 +106,83 @@
       </scrollpane>
       <component id="e40b" class="javax.swing.JTextField" binding="port">
         <constraints>
-          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
+          <grid row="1" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="298" height="30"/>
           </grid>
         </constraints>
         <properties/>
       </component>
       <component id="28c45" class="javax.swing.JLabel" binding="portLabel">
         <constraints>
-          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Port:"/>
         </properties>
       </component>
-      <component id="9cfed" class="javax.swing.JComboBox" binding="speedBox">
-        <constraints>
-          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-      </component>
-      <component id="42120" class="javax.swing.JLabel" binding="speedLabel">
-        <constraints>
-          <grid row="2" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Speed:"/>
-        </properties>
-      </component>
-      <component id="35aaf" class="javax.swing.JButton" binding="connectButton" default-binding="true">
-        <constraints>
-          <grid row="1" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Connect"/>
-        </properties>
-      </component>
       <component id="e9854" class="javax.swing.JButton" binding="goButton" default-binding="true">
         <constraints>
-          <grid row="10" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="9" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Go"/>
         </properties>
       </component>
-      <component id="85abd" class="javax.swing.JButton" binding="refreshButton" default-binding="true">
+      <component id="cae37" class="javax.swing.JTextField" binding="keyword">
         <constraints>
-          <grid row="4" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="1" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="e40fe" class="javax.swing.JComboBox" binding="fileNamesBox">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Refresh"/>
+          <model/>
+        </properties>
+      </component>
+      <component id="ad743" class="javax.swing.JLabel" binding="keywordLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <enabled value="true"/>
+          <text value="Keyword: "/>
+        </properties>
+      </component>
+      <component id="dde6d" class="javax.swing.JButton" binding="searchButton" default-binding="true">
+        <constraints>
+          <grid row="6" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="40" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Search"/>
+        </properties>
+      </component>
+      <component id="87606" class="javax.swing.JLabel" binding="searchLabel">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-14924545"/>
+          <text value="Search"/>
+        </properties>
+      </component>
+      <component id="381a6" class="javax.swing.JButton" binding="findMyFilesButton">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Find My Files:"/>
         </properties>
       </component>
       <component id="55631" class="javax.swing.JLabel" binding="fileInfoLabel">
         <constraints>
-          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <foreground color="-16235265"/>
@@ -221,23 +191,15 @@
       </component>
       <component id="79691" class="javax.swing.JLabel" binding="fileNamesLabel">
         <constraints>
-          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="File Names:"/>
         </properties>
       </component>
-      <component id="e40fe" class="javax.swing.JComboBox" binding="fileNamesBox">
-        <constraints>
-          <grid row="7" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <model/>
-        </properties>
-      </component>
       <component id="57508" class="javax.swing.JLabel" binding="descriptionLabel">
         <constraints>
-          <grid row="7" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Description:"/>
@@ -245,18 +207,68 @@
       </component>
       <component id="5a897" class="javax.swing.JTextField" binding="description">
         <constraints>
-          <grid row="7" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="4" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
         <properties/>
       </component>
-      <component id="381a6" class="javax.swing.JButton" binding="findMyFilesButton">
+      <component id="85abd" class="javax.swing.JButton" binding="refreshButton" default-binding="true">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Find My Files:"/>
+          <text value="Refresh"/>
+        </properties>
+      </component>
+      <component id="ab7c6" class="javax.swing.JLabel" binding="connectionLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-14924545"/>
+          <text value="Connection"/>
+        </properties>
+      </component>
+      <component id="14048" class="javax.swing.JLabel" binding="ftpLabel">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <foreground color="-14924545"/>
+          <text value="FTP"/>
+        </properties>
+      </component>
+      <component id="e8cf6" class="javax.swing.JButton" binding="sendFileButton">
+        <constraints>
+          <grid row="4" column="7" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Send to Server"/>
+        </properties>
+      </component>
+      <component id="42120" class="javax.swing.JLabel" binding="speedLabel">
+        <constraints>
+          <grid row="1" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="40" height="16"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Speed:"/>
+        </properties>
+      </component>
+      <component id="9cfed" class="javax.swing.JComboBox" binding="speedBox">
+        <constraints>
+          <grid row="1" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="35aaf" class="javax.swing.JButton" binding="connectButton" default-binding="true">
+        <constraints>
+          <grid row="2" column="7" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Connect"/>
         </properties>
       </component>
     </children>
