@@ -2,37 +2,40 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class P2PClient extends Thread {
 
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-    private boolean connectedToCentralServer;
-    String searchCommand;
+    //    private boolean connectedToCentralServer;
     private String searchResponse;
-    private String FTPCommand;
-    String connectCommand;
     private FTPServer ftpServer;
     private ObjectInputStream ois;
     private HashSet<Peer> peerSet;
-//
-//    public String getConnectCommand() {
-//        return connectCommand;
-//    }
-
-    private FTPClient ftpClient;
+    private boolean searchCommandSent;
     private static final String FILE_LIST_FILENAME = "filelist.txt";
+    private FTPClient ftpClient;
+
+    /**
+     * Commands that are sent to the client handler
+     **/
+    String connectCommand;
+    String searchCommand;
+    private String FTPCommand;
+    String newFileCommand;
+
 
     public P2PClient(String serverHostName, int port) {
         try {
             socket = new Socket(serverHostName, port);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
+            //ois = new ObjectInputStream(socket.getInputStream());
 
-//            ftpServer = new FTPServer();
-//            ftpServer.start();
+            ftpServer = new FTPServer();
+            ftpServer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,48 +43,17 @@ public class P2PClient extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (socket.isConnected()) {
             try {
 
                 if (connectCommand != null && !connectCommand.isEmpty()) {
                     sendConnectCommand(connectCommand);
                     System.out.println("Connect command sent to:  " + socket.getInetAddress().getHostAddress());
                     connectCommand = null;
-                    // && in.readUTF().toLowerCase().contains("connect") :: taken out  else if from below
                 }
 
-                if (!connectedToCentralServer) {
-                    // Sends file list file to server
-                    //ftpClient.sendCommand("stor: " + FILE_LIST_FILENAME);
-
-                    File folder = new File("C:\\Users\\mille\\eclipse\\java-2018-092\\eclipse");
-                    File[] listOfFiles = folder.listFiles();
-                    StringBuilder listOfFileNames = new StringBuilder();
-
-                    try {
-                        if (listOfFiles.length > 0 ) {
-                            listOfFileNames.append("200 ");
-
-                            for (File file : listOfFiles) {
-                                if (file.isFile()) {
-                                    listOfFileNames.append(file.getName()).append(" ");
-                                }
-                            }
-                        }
-                        else {
-                            listOfFileNames.append("404");
-                        }
-
-                        listOfFileNames.append("\r\n");
-                        out.writeBytes(listOfFileNames.toString());
-
-                    System.out.println("Files sent to:  " + socket.getInetAddress().getHostAddress());
-                    }
-                    catch (NullPointerException e) {
-                        System.out.println("No files found.");
-                    }
-
-                    connectedToCentralServer = true;
+                if (newFileCommand != null && !newFileCommand.isEmpty()) {
+                    newFileCommand = null;
                 }
 
                 if (FTPCommand != null && !FTPCommand.isEmpty()) {
@@ -90,13 +62,14 @@ public class P2PClient extends Thread {
                     FTPCommand = null;
                 }
 
-                if(searchCommand != null && !searchCommand.isEmpty() ) {
+                if (searchCommand != null && !searchCommand.isEmpty()) {
                     System.out.println("Searching for: " + searchCommand);
                     sendSearchCommand(searchCommand);
+                    searchCommandSent = true;
                     searchCommand = null;
                 }
 
-                if (connectedToCentralServer) {
+                if (searchCommandSent) {
                     int len = in.readByte();
                     while (len > 0) {
                         try {
@@ -104,8 +77,10 @@ public class P2PClient extends Thread {
                             if (peer != null) {
                                 peerSet.add(peer);
                             }
-                        } catch (ClassNotFoundException ignored) { }
+                        } catch (ClassNotFoundException ignored) {
+                        }
                     }
+                    searchCommandSent = false;
                 }
 
 
@@ -124,7 +99,7 @@ public class P2PClient extends Thread {
 
     // Needs to send to CentralServer somewhere
     public void sendConnectCommand(String command) throws IOException {
-        connectCommand = command;
+        connectCommand = "newPeer " + command + "\r\n";
         out.writeBytes(connectCommand);
     }
 
@@ -144,14 +119,18 @@ public class P2PClient extends Thread {
 
     public void sendSearchCommand(String command) {
         try {
-            searchCommand = "search " + command;
+            searchCommand = "search " + command + "\r\n";
             out.writeBytes(searchCommand);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-//        DataOutputStream dataToServer = new DataOutputStream(dataSocket.getOutputStream());
-//        dataToServer.writeBytes(searchCommand);
+
+    public void sendNewFileCommand(String command) throws IOException {
+        newFileCommand = "200 " + command + "\r\n";
+        out.writeBytes(newFileCommand);
+        System.out.println("Files sent to:  " + socket.getInetAddress().getHostAddress());
+    }
 
     public void loadSearchResults() {
         /*BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
