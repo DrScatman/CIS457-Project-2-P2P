@@ -61,8 +61,6 @@ public class P2PClient extends Thread {
                     File[] listOfFiles = folder.listFiles();
                     StringBuilder listOfFileNames = new StringBuilder();
 
-
-
                     try {
                         if (listOfFiles.length > 0 ) {
                             listOfFileNames.append("200 ");
