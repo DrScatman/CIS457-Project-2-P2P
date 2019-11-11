@@ -5,13 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
 
 public class P2PClientGUI extends Component {
     /** Labels **/
@@ -45,6 +46,7 @@ public class P2PClientGUI extends Component {
     private JButton goButton;
     private JButton refreshButton;
     private JButton findMyFilesButton;
+    private JButton sendFileButton;
 
     /** Combo Boxes**/
     private JComboBox<String> speedBox;
@@ -77,6 +79,7 @@ public class P2PClientGUI extends Component {
         port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
+        description.setText("Desc numbertwo");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
@@ -84,6 +87,7 @@ public class P2PClientGUI extends Component {
         goButton.addActionListener(buttonListener);
         findMyFilesButton.addActionListener(buttonListener);
         refreshButton.addActionListener(buttonListener);
+        sendFileButton.addActionListener(buttonListener);
     }
 
     public static void main(String[] args) {
@@ -145,6 +149,16 @@ public class P2PClientGUI extends Component {
                             fileNamesBox.addItem(x.getName());
                         }
                     });
+                }
+            }
+
+            if (e.getSource() == sendFileButton) {
+                System.out.println("Sending new file...");
+                client.newFileCommand = Objects.requireNonNull(fileNamesBox.getSelectedItem()).toString() + " " + description.getText();
+                try {
+                    client.sendNewFileCommand(client.newFileCommand);
+                } catch (Exception ex) {
+                    System.out.println("No files found.");
                 }
             }
 
