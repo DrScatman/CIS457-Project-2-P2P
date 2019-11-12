@@ -79,7 +79,7 @@ public class P2PClientGUI extends Component {
         port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
-        description.setText("Desc numbertwo");
+        description.setText("desc");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
@@ -214,12 +214,10 @@ public class P2PClientGUI extends Component {
     }
 
     public static class WindowListener extends WindowAdapter {
-
         //Figure out how to close the socket connection when closing GUI
         @Override
         public void windowClosing(WindowEvent e) {
             System.out.println("Closing");
-
             e.getWindow().dispose();
         }
     }

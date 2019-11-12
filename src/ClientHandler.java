@@ -70,9 +70,6 @@ public class ClientHandler extends Thread {
         }
     }
 
-    /**
-     * add IP for users
-     **/
     private void processPeerData() {
         try {
             // First string received contains the username, hostname, and speed for the client
@@ -102,12 +99,8 @@ public class ClientHandler extends Thread {
             if (data.equals("200")) {
                 //Reads in the number of files available for download.
                 String fileName = tokens.nextToken();
-                ArrayList<String> fileDescription = new ArrayList<>();
+                String fileDescription = tokens.nextToken();
                 FileData fileData;
-
-                while (tokens.hasMoreTokens()) {
-                    fileDescription.add(tokens.nextToken());
-                }
 
                 fileData = new FileData(fileName, fileDescription);
                 System.out.println("User: " + this.peer.getHostUserName() + " Added -> " + fileData.toString());

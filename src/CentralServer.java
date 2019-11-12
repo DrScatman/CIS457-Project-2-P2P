@@ -13,7 +13,7 @@ public class CentralServer {
     //peerData holds a list of PeerData objects to create a list of all available files across clients.
     public static ArrayList<Peer> userList = new ArrayList<Peer>();
     public static ArrayList<FileData> fileList = new ArrayList<FileData>();
-    public static HashMap<Peer, Set<FileData>> map;
+    public static HashMap<Peer, Set<FileData>> map = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
 
