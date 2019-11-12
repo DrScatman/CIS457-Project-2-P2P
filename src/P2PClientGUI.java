@@ -8,11 +8,9 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.*;
 import java.util.Arrays;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.LockSupport;
-import javax.swing.JFileChooser;
+import java.util.Objects;
+import java.util.Set;
 
 public class P2PClientGUI extends Component {
     /** Labels **/
@@ -26,9 +24,6 @@ public class P2PClientGUI extends Component {
     private JLabel keywordLabel;
     private JLabel ftpLabel;
     private JLabel commandLabel;
-    private JLabel fileInfoLabel;
-    private JLabel fileNamesLabel;
-    private JLabel descriptionLabel;
 
     /** Text Fields/Areas **/
     private JTextField serverHostname;
@@ -37,7 +32,7 @@ public class P2PClientGUI extends Component {
     private JTextField hostname;
     private JTextField keyword;
     private JTextField command;
-    private JTextField description;
+
     private JTextArea commandLineArea;
 
     /** Buttons **/
@@ -45,12 +40,11 @@ public class P2PClientGUI extends Component {
     private JButton searchButton;
     private JButton goButton;
     private JButton refreshButton;
-    private JButton findMyFilesButton;
-    private JButton sendFileButton;
+
 
     /** Combo Boxes**/
     private JComboBox<String> speedBox;
-    private JComboBox<String> fileNamesBox;
+
 
     /** Everything else**/
     private JTable hostsTable;
@@ -79,15 +73,12 @@ public class P2PClientGUI extends Component {
         port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
-        description.setText("desc");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
         connectButton.addActionListener(buttonListener);
         goButton.addActionListener(buttonListener);
-        findMyFilesButton.addActionListener(buttonListener);
         refreshButton.addActionListener(buttonListener);
-        sendFileButton.addActionListener(buttonListener);
         commandLineArea.setVisible(true);
     }
 
@@ -136,33 +127,33 @@ public class P2PClientGUI extends Component {
             }
 
             //Handle open button action.
-            if (e.getSource() == findMyFilesButton) {
-                JFileChooser fc = new JFileChooser(System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P");
-                fc.setDialogTitle("Multiple file selection:");
-                fc.setMultiSelectionEnabled(true);
-                fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-                int returnValue = fc.showOpenDialog(null);
-                if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    File[] files = fc.getSelectedFiles();
-                    Arrays.asList(files).forEach(x -> {
-                        if (x.isFile()) {
-                            fileNamesBox.addItem(x.getName());
-                        }
-                    });
-                }
-            }
-            // connects
-
-            if (e.getSource() == sendFileButton) {
-                System.out.println("Sending new file...");
-                client.newFileCommand = Objects.requireNonNull(fileNamesBox.getSelectedItem()).toString() + " " + description.getText();
-                try {
-                    client.sendNewFileCommand(client.newFileCommand);
-                } catch (Exception ex) {
-                    System.out.println("No files found.");
-                }
-            }
+//            if (e.getSource() == findMyFilesButton) {
+//                JFileChooser fc = new JFileChooser(System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P");
+//                fc.setDialogTitle("Multiple file selection:");
+//                fc.setMultiSelectionEnabled(true);
+//                fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//
+//                int returnValue = fc.showOpenDialog(null);
+//                if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                    File[] files = fc.getSelectedFiles();
+//                    Arrays.asList(files).forEach(x -> {
+//                        if (x.isFile()) {
+//                            fileNamesBox.addItem(x.getName());
+//                        }
+//                    });
+//                }
+//            }
+//            // connects
+//
+//            if (e.getSource() == sendFileButton) {
+//                System.out.println("Sending new file...");
+//                client.newFileCommand = Objects.requireNonNull(fileNamesBox.getSelectedItem()).toString() + " " + description.getText();
+//                try {
+//                    client.sendNewFileCommand(client.newFileCommand);
+//                } catch (Exception ex) {
+//                    System.out.println("No files found.");
+//                }
+//            }
 
             if (e.getSource() == connectButton) {
                 if (connectButton.getText().equals("Connect")) {

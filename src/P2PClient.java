@@ -30,7 +30,6 @@ public class P2PClient extends Thread {
     public P2PClient(String serverHostName, int port) {
         try {
             socket = new Socket(serverHostName, port);
-            //in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
             peerSet = new HashSet<>();
@@ -45,7 +44,7 @@ public class P2PClient extends Thread {
     @Override
     public void run() {
 //        ftpServer.run();
-        while (socket.isConnected()) {
+        while (socket.isConnected() && !socket.isClosed()) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -83,10 +82,14 @@ public class P2PClient extends Thread {
         String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P\\fileList.txt";
         HashSet<String> files = getFiles(path);
         for (String file : files) {
-            String[] info = file.split(" ");
-            newFileCommand = info[0] + " " + info[1];
+//            String[] info = file.split(" ");
+//            StringBuilder tempDesc = new StringBuilder();
+//            for(int i = 1; i < info.length-1; i++) {
+//                tempDesc.append(info[i]).append(" ");
+//            }
+//            newFileCommand = info[0] + " " + tempDesc;
             try {
-                sendNewFileCommand(newFileCommand);
+                sendNewFileCommand(file);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -167,7 +170,6 @@ public class P2PClient extends Thread {
     }
 
     public String sendCommandLine() {
-        //commandline = ftpClient.sendySentence;
         return commandline;
     }
 
@@ -203,8 +205,4 @@ public class P2PClient extends Thread {
         System.out.println("Files sent to:  " + socket.getInetAddress().getHostAddress());
     }
 
-    public void loadSearchResults() {
-        /*BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-        searchResponse = inData.readLine();*/
-    }
 }
