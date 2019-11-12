@@ -71,7 +71,7 @@ public class P2PClient extends Thread {
                 }
 
                 if (searchCommand != null && !searchCommand.isEmpty()) {
-                    sendSearchCommand(searchCommand);
+                   // sendSearchCommand(searchCommand);
                     searchCommandSent = true;
                     searchCommand = null;
                 }
