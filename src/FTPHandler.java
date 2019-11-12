@@ -34,6 +34,7 @@ public class FTPHandler extends Thread{
         //may need to change where it get the port number
         StringTokenizer tokens = new StringTokenizer(fromClient);
         String frstln = tokens.nextToken();
+        System.out.println(frstln);
         int port = Integer.parseInt(frstln);
         String clientCommand = tokens.nextToken();
         System.out.println(clientCommand + socket.getInetAddress());
@@ -43,14 +44,14 @@ public class FTPHandler extends Thread{
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
             //For when we need to use on a machine, set PATH to directory of server
-            File folder = new File("C:\\Users\\nicho\\IdeaProjects\\CIS457Projects\\CIS457-Project-2-P2P\\");
+            File folder = new File("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\");
             String[] files = folder.list();
 
             for (String file : files){
                 dataOutToClient.writeBytes(file);
                 dataOutToClient.writeBytes(" ");
             }
-
+            System.out.println(dataSocket);
             dataOutToClient.writeBytes("\n");
 
             dataOutToClient.close();
@@ -64,7 +65,7 @@ public class FTPHandler extends Thread{
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
             String fileName = tokens.nextToken();//starting after the space
-            File folder = new File("C:\\Users\\nicho\\IdeaProjects\\CIS457Projects\\CIS457-Project-2-P2P\\");
+            File folder = new File("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\");
             String[] files = folder.list();
 
             //finding our file in directory and sending it
@@ -74,7 +75,7 @@ public class FTPHandler extends Thread{
                     found = true;
                     dataOutToClient.writeBytes("200 OK");
                     dataOutToClient.writeBytes("\n");
-                    FileInputStream fis = new FileInputStream("C:\\Users\\nicho\\IdeaProjects\\CIS457Projects\\CIS457-Project-2-P2P\\"+ fileName);
+                    FileInputStream fis = new FileInputStream("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\"+ fileName);
                     sendBytes(fis, dataOutToClient);
                     fis.close();
                 }
