@@ -87,6 +87,7 @@ public class ClientHandler extends Thread {
             System.out.println("User: " + peer.getHostUserName() + " @ " + peer.getIpAddress() + " has joined. Total users: " + CentralServer.map.size());
 
         } catch (Throwable e) {
+            e.printStackTrace();
             System.out.println("Process Peer Data Error");
         }
     }
