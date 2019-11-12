@@ -5,11 +5,14 @@ import java.text.*;
 import java.lang.*;
 import javax.swing.*;
 
-class FTPClient extends Thread{
+class FTPClient{
     
     private Socket controlSocket;
     private int port;
     private String sentence;
+    public String sendySentence;
+    DataOutputStream outToServer;
+    DataInputStream inFromServer;
 
     public FTPClient(String serverIp, int port) throws Exception {
         /*String sentence;
@@ -27,6 +30,9 @@ class FTPClient extends Thread{
         System.out.println("You are connected to " + serverName);*/
         this.port = port;
         controlSocket = new Socket(serverIp, port);
+        outToServer = new DataOutputStream(controlSocket.getOutputStream());
+
+        inFromServer = new DataInputStream(new BufferedInputStream(controlSocket.getInputStream()));
         // Started by caller this.start();
     }
 
@@ -34,14 +40,12 @@ class FTPClient extends Thread{
         this.sentence = sentence;
     }
 
-    @Override
+
     public void run() {
         try {
             while (sentence != null && !sentence.isEmpty()) {
                 String modifiedSentence;
-                DataOutputStream outToServer = new DataOutputStream(controlSocket.getOutputStream());
 
-                DataInputStream inFromServer = new DataInputStream(new BufferedInputStream(controlSocket.getInputStream()));
 
                 //String sentence = inFromUser.readLine();
 
@@ -55,14 +59,15 @@ class FTPClient extends Thread{
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
                     while (inData.read() != -1) {
                         modifiedSentence = inData.readLine();
-                        System.out.println(modifiedSentence);
+                        //System.out.println(modifiedSentence);
+                        sendySentence += modifiedSentence;
                     }
 
                     inData.close();
                     welcomeData.close();
                     dataSocket.close();
-                    System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
-
+                    //System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
+                    sendySentence += "\nWhat would you like to do next: \n retr: file.txt || quit:\n";
                 } else if (sentence.startsWith("retr: ")) {
                     StringTokenizer tok = new StringTokenizer(sentence);
                     tok.nextToken();
@@ -77,10 +82,14 @@ class FTPClient extends Thread{
 
                     String read = inData.readLine();
                     if (read.equals("550")) {
-                        System.out.println("550 Cannot find file");
+                        //System.out.println("550 Cannot find file");
+                        sendySentence += "550 Cannot find file\n";
+                        //sendySentence +=null;
                     }
                     if (read.equals("200 OK")) {
-                        System.out.println("200 OK");
+                        //System.out.println("200 OK");
+                        sendySentence+="200 OK\n";
+                        //sendySentence=null;
                         File file = new File(fileName);
                         OutputStream out = new FileOutputStream(file);
                         out.write(inData.read());
@@ -91,6 +100,7 @@ class FTPClient extends Thread{
                     dataSocket.close();
 
                     System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
+                    sendySentence += "\nWhat would you like to do next: \n retr: file.txt || quit:\n";
 
                 } else if (sentence.startsWith("stor: ")) {
                     StringTokenizer tok = new StringTokenizer(sentence);
@@ -144,12 +154,16 @@ class FTPClient extends Thread{
                     port += 2;
                     outToServer.writeBytes(port + " " + sentence + '\n');
                     controlSocket.close();
-                    System.out.println("Connection closed");
+                    //System.out.println("Connection closed");
+                    sendySentence += "Connection closed\n";
+                    //sendySentence = null;
                     return;
                 } else {
-                    System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
+                    //System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
+                    sendySentence += "\nWhat would you like to do next: \n retr: file.txt || quit:\n";
+                    //sendySentence=null;
                 }
-
+                //sendySentence=null;
                 sentence = null;
             }
         } catch (Exception e){

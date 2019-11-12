@@ -16,7 +16,7 @@ public class CentralServer {
     public static HashMap<Peer, Set<FileData>> map;
 
     public static void main(String[] args) throws IOException {
-
+    //server
         try {
             welcomeSocket = new ServerSocket(8081);
             System.out.println("Server Started");
@@ -25,6 +25,7 @@ public class CentralServer {
             System.err.println("Error: Server was not started");
             e.printStackTrace();
         }
+        //client
         try {
             while(true) {
                 Socket connectionSocket = welcomeSocket.accept();
