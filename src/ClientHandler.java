@@ -204,8 +204,6 @@ public class ClientHandler extends Thread {
      * Searches for the files the client is requesting
      **/
     private void processSearchRequest() {
-        HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
-
         try {
             System.out.println("Process");
 //            System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
@@ -219,16 +217,13 @@ public class ClientHandler extends Thread {
 
             for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                 for (FileData file : entry.getValue()) {
-
                     if (file.getFileDescription().contains(searchKey)) {
-                        peersWithMatchingFiles.add(entry.getKey());
+                        Peer peer = entry.getKey();
+                        out.writeUTF(peer.getIpAddress() + ":" + file.getFileName() + " ");
                     }
                 }
             }
             //out.writeByte(peersWithMatchingFiles.size());
-            for (Peer peer : peersWithMatchingFiles) {
-                oos.writeObject(peer);
-            }
 //            }
         } catch (Throwable e) {
             e.printStackTrace();
