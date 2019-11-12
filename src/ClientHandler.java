@@ -59,6 +59,9 @@ public class ClientHandler extends Thread {
                         if (data.equals("200")) {
                             processPeerFiles();
                         }
+                        if (data.equals("quit:")) {
+                            disconnectPeer();
+                        }
 
                         if (data.equals("search")) {
                             processSearchRequest();
@@ -151,6 +154,13 @@ public class ClientHandler extends Thread {
     }
 
     public void disconnectPeer() {
+        String searchKey = tokens.nextToken();
+        System.out.println(searchKey);
+        for (Peer peer : CentralServer.map.keySet())  {
+            if (peer.getIpAddress().equals(searchKey)) {
+                CentralServer.map.remove(peer);
+            }
+        }
 
     }
     //int numFiles = Integer.parseInt(data);
@@ -224,7 +234,7 @@ public class ClientHandler extends Thread {
             for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                 for (FileData file : entry.getValue()) {
 
-                    if (file.getFileDescription().contains(searchKey)) {
+                    if (file.getFileDescription().toLowerCase().contains(searchKey.toLowerCase())) {
                         peersWithMatchingFiles.add(entry.getKey());
                     }
                 }
@@ -232,7 +242,9 @@ public class ClientHandler extends Thread {
             //out.writeByte(peersWithMatchingFiles.size());
             for (Peer peer : peersWithMatchingFiles) {
                 oos.writeObject(peer);
+                oos.flush();
             }
+            System.out.println("Sending " + peersWithMatchingFiles.size() + " Peer(s) matching search");
 //            }
         } catch (Throwable e) {
             e.printStackTrace();
