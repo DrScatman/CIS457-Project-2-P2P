@@ -30,7 +30,6 @@ public class P2PClient extends Thread {
     public P2PClient(String serverHostName, int port) {
         try {
             socket = new Socket(serverHostName, port);
-            //in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
             peerSet = new HashSet<>();
@@ -45,7 +44,7 @@ public class P2PClient extends Thread {
     @Override
     public void run() {
 //        ftpServer.run();
-        while (socket.isConnected()) {
+        while (socket.isConnected() && !socket.isClosed()) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -171,7 +170,6 @@ public class P2PClient extends Thread {
     }
 
     public String sendCommandLine() {
-        //commandline = ftpClient.sendySentence;
         return commandline;
     }
 
@@ -207,8 +205,4 @@ public class P2PClient extends Thread {
         System.out.println("Files sent to:  " + socket.getInetAddress().getHostAddress());
     }
 
-    public void loadSearchResults() {
-        /*BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-        searchResponse = inData.readLine();*/
-    }
 }

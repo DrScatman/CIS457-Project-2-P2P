@@ -12,7 +12,6 @@ public class FTPHandler extends Thread{
         System.out.println("Client connected " + socket.getInetAddress());
     }
 
-
     @Override
     public void run() {
         try{
@@ -42,24 +41,19 @@ public class FTPHandler extends Thread{
         System.out.println(clientCommand + socket.getInetAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         if (clientCommand.equals("list:")) {
-            //System.out.println("a");
             Socket dataSocket = new Socket(socket.getInetAddress().getHostAddress(), port);
-            //System.out.println("b");
+
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
-            //System.out.println("c");
             //For when we need to use on a machine, set PATH to directory of server
             String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P";
             File folder = new File(path);
             String[] files = folder.list();
-            //System.out.println("d");
 
             for (String file : files){
                 dataOutToClient.writeBytes(file);
                 dataOutToClient.writeBytes(" ");
             }
-            //System.out.println("e");
 
-            //System.out.println(dataSocket);
             dataOutToClient.writeBytes("\n");
 
             dataOutToClient.close();
@@ -131,22 +125,17 @@ public class FTPHandler extends Thread{
                 byteWriter.write(dataIn.read());
                 byteWriter.close();
             }
-
-
             dataOutToClient.close();
             dataSocket.close();
             System.out.println("Data Socket closed");
         }
-
 
         if (clientCommand.equals("quit:")){
             socket.close();
             System.out.println("Client has disconnected");
             return;
         }
-
     }
-
 
     //might need bigger buffer depending on file
     private static void sendBytes(FileInputStream fis, OutputStream os) throws Exception{
