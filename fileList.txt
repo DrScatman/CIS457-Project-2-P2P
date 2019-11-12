@@ -1,4 +1,2 @@
-file1.txt testing file
-aFile.xml hamburger pizza
-hello.world first assembly code
-rspeer.json ;)
+hello.world:code
+rspeer.json:botting
