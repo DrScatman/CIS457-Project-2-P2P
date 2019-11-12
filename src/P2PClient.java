@@ -82,14 +82,10 @@ public class P2PClient extends Thread {
         String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P\\fileList.txt";
         HashSet<String> files = getFiles(path);
         for (String file : files) {
-//            String[] info = file.split(" ");
-//            StringBuilder tempDesc = new StringBuilder();
-//            for(int i = 1; i < info.length-1; i++) {
-//                tempDesc.append(info[i]).append(" ");
-//            }
-//            newFileCommand = info[0] + " " + tempDesc;
+            String[] info = file.split(":");
+            newFileCommand = info[0] + " " + info[1];
             try {
-                sendNewFileCommand(file);
+                sendNewFileCommand(newFileCommand);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -186,6 +182,7 @@ public class P2PClient extends Thread {
     }
 
     public void checkForPeers() {
+        peerSet.clear();
         try {
             String input = in.readUTF();
             if (input.contains(":")) {
