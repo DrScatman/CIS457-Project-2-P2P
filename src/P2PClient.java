@@ -46,6 +46,7 @@ public class P2PClient extends Thread {
 
     @Override
     public void run() {
+//        ftpServer.run();
         while (socket.isConnected()) {
             try {
 
@@ -128,7 +129,6 @@ public class P2PClient extends Thread {
         try {
             if (ftpClient == null) {
                 ftpClient = new FTPClient(command, 8080);
-
             } else {
                 ftpClient.sendCommand(command);
                 ftpClient.run();

@@ -185,7 +185,7 @@ public class P2PClientGUI extends Component {
             //need to wait for client to give command line
             if (e.getSource() == goButton){
                 String comm = command.getText();
-                commandLineArea.append(">> " + comm);
+                commandLineArea.append(">> " + comm + "\n");
                 try {
                     client.sendFTPCommand(comm);
                 } catch (IOException ex) {
