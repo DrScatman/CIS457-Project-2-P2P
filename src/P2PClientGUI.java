@@ -79,7 +79,7 @@ public class P2PClientGUI extends Component {
         port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
-        description.setText("Desc numbertwo");
+        description.setText("desc");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);
@@ -120,6 +120,7 @@ public class P2PClientGUI extends Component {
             if (e.getSource() == searchButton){
                 //client.sendSearchCommand(word);
                 client.searchCommand = keyword.getText();
+                client.sendSearchCommand(client.searchCommand);
                 //might need some fixing
                 HashSet<Peer> peerSet = null;
                 while (peerSet == null){
@@ -175,9 +176,13 @@ public class P2PClientGUI extends Component {
                     client.start();
                 } else {
                     connectButton.setText("Connect");
-                    client.connectCommand = "quit:";
+                    client.disconnectCommand = "quit: ";
+                    try {
+                        client.sendDisconnectCommand(client.disconnectCommand);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-
             }
 
             //need to wait for client to give command line
@@ -214,12 +219,10 @@ public class P2PClientGUI extends Component {
     }
 
     public static class WindowListener extends WindowAdapter {
-
         //Figure out how to close the socket connection when closing GUI
         @Override
         public void windowClosing(WindowEvent e) {
             System.out.println("Closing");
-
             e.getWindow().dispose();
         }
     }
