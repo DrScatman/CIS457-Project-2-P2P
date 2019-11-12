@@ -88,6 +88,7 @@ public class P2PClientGUI extends Component {
         findMyFilesButton.addActionListener(buttonListener);
         refreshButton.addActionListener(buttonListener);
         sendFileButton.addActionListener(buttonListener);
+        commandLineArea.setVisible(true);
     }
 
     public static void main(String[] args) {
@@ -187,12 +188,13 @@ public class P2PClientGUI extends Component {
             //need to wait for client to give command line
             if (e.getSource() == goButton){
                 String comm = command.getText();
-                //client.sendFTPCommand(comm);
-                //might need some fixing
-                Scanner reader = new Scanner(client.sendCommandLine());
-                while (reader.hasNext()){
-                    command.setText(reader.next());
+                commandLineArea.append(">> " + comm);
+                try {
+                    client.sendFTPCommand(comm);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
+                commandLineArea.append(client.commandline);
             }
 
             if (e.getSource() == refreshButton){

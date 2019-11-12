@@ -1,4 +1,6 @@
-public class Peer {
+import java.io.Serializable;
+
+public class Peer implements Serializable {
     private String hostName;
     private String hostUserName;
     private String speed;

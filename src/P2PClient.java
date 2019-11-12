@@ -26,6 +26,7 @@ public class P2PClient extends Thread {
     String searchCommand;
     private String FTPCommand;
     String newFileCommand;
+    String commandline;
 
 
     public P2PClient(String serverHostName, int port) {
@@ -69,7 +70,7 @@ public class P2PClient extends Thread {
                 }
 
                 if (searchCommand != null && !searchCommand.isEmpty()) {
-                    sendSearchCommand(searchCommand);
+                   // sendSearchCommand(searchCommand);
                     searchCommandSent = true;
                     searchCommand = null;
                 }
@@ -123,8 +124,20 @@ public class P2PClient extends Thread {
 
     // Needs to send to CentralServer somewhere
     public void sendFTPCommand(String command) throws IOException {
+        try {
+            if (ftpClient == null) {
+                ftpClient = new FTPClient(command, 8080);
+
+            } else {
+                ftpClient.sendCommand(command);
+                ftpClient.run();
+                commandline = ftpClient.sendySentence;
+                ftpClient.sendySentence = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         FTPCommand = command;
-        out.writeBytes(FTPCommand);
     }
 
     public HashSet<Peer> loadPeerList() {
@@ -132,7 +145,8 @@ public class P2PClient extends Thread {
     }
 
     public String sendCommandLine() {
-        return null;
+        //commandline = ftpClient.sendySentence;
+        return commandline;
     }
 
     public void sendSearchCommand(String command) {

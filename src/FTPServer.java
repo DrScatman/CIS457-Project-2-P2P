@@ -11,7 +11,7 @@ class FTPServer extends Thread{
 
 		while (true) {
 			Socket connectionSocket = welcomeSocket.accept();
-			ClientHandler handler = new ClientHandler(connectionSocket);
+			FTPHandler handler = new FTPHandler(connectionSocket);
 			handler.start();
 		}
 		} catch (Exception e) {
