@@ -39,19 +39,23 @@ public class FTPHandler extends Thread{
         String clientCommand = tokens.nextToken();
         System.out.println(clientCommand + socket.getInetAddress());
         if (clientCommand.equals("list:")) {
-
-            Socket dataSocket = new Socket(socket.getInetAddress(), port);
+            //System.out.println("a");
+            Socket dataSocket = new Socket(socket.getInetAddress().getHostAddress(), port);
+            //System.out.println("b");
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
-
+            //System.out.println("c");
             //For when we need to use on a machine, set PATH to directory of server
             File folder = new File("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\");
             String[] files = folder.list();
+            //System.out.println("d");
 
             for (String file : files){
                 dataOutToClient.writeBytes(file);
                 dataOutToClient.writeBytes(" ");
             }
-            System.out.println(dataSocket);
+            //System.out.println("e");
+
+            //System.out.println(dataSocket);
             dataOutToClient.writeBytes("\n");
 
             dataOutToClient.close();

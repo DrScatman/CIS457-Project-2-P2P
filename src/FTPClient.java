@@ -54,10 +54,10 @@ class FTPClient{
                     port = port + 2;
                     outToServer.writeBytes(port + " " + sentence + '\n');
 
-                    //ServerSocket welcomeData = new ServerSocket(port);
-                    Socket dataSocket = controlSocket;
+                    ServerSocket welcomeData = new ServerSocket(port);
+                    Socket dataSocket = welcomeData.accept();
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
-                    while (inData.read() != -1) {
+                    while (inData.read() > 0) {
                         modifiedSentence = inData.readLine();
                         //System.out.println(modifiedSentence);
                         sendySentence += modifiedSentence;
