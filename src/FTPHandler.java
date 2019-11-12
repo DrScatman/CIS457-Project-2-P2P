@@ -16,7 +16,7 @@ public class FTPHandler extends Thread{
     @Override
     public void run() {
         try{
-            while(socket.isConnected()){
+            while(socket.isConnected() && !socket.isClosed()){
                 processRequest();
                 Thread.sleep(500);
             }
