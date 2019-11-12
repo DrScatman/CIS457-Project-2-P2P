@@ -53,10 +53,8 @@ public class P2PClient extends Thread {
                     System.out.println("Connect command sent to:  " + socket.getInetAddress().getHostAddress());
                     connectCommand = null;
                 }
-                // sends a quit message to central server.
-                if (disconnectCommand != null && !disconnectCommand.isEmpty()) {
-                    //sendDisconnectCommand(disconnectCommand);
 
+                if (disconnectCommand != null && !disconnectCommand.isEmpty()) {
                     disconnectCommand = null;
                 }
 
@@ -114,11 +112,11 @@ public class P2PClient extends Thread {
         out.writeBytes(connectCommand);
     }
 
-    // Needs to send to CentralServer somewhere
+    // Needs to send quit to CentralServer somewhere
     public void sendDisconnectCommand(String command) throws IOException {
-        disconnectCommand = command + InetAddress.getLocalHost().getHostAddress() + "\r\n";
+        disconnectCommand = command + InetAddress.getLocalHost().getHostAddress().toString() + "\r\n";
         out.writeBytes(disconnectCommand);
-        System.out.println("Disconnect command sent to:  " + socket.getInetAddress().getHostAddress());
+        System.out.println("Quit message sent to:  " + socket.getInetAddress().getHostAddress());
         out.close();
         in.close();
     }

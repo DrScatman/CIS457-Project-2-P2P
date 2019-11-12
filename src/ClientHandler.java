@@ -55,6 +55,9 @@ public class ClientHandler extends Thread {
                         if (data.equals("200")) {
                             processPeerFiles();
                         }
+                        if (data.equals("quit:")) {
+                            disconnectPeer();
+                        }
 
                         if (data.equals("search")) {
                             processSearchRequest();
@@ -147,6 +150,13 @@ public class ClientHandler extends Thread {
     }
 
     public void disconnectPeer() {
+        String searchKey = tokens.nextToken();
+        System.out.println(searchKey);
+        for (Peer peer : CentralServer.map.keySet())  {
+            if (peer.getIpAddress().equals(searchKey)) {
+                CentralServer.map.remove(peer);
+            }
+        }
 
     }
     //int numFiles = Integer.parseInt(data);
