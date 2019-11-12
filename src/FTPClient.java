@@ -54,8 +54,8 @@ class FTPClient{
                     port = port + 2;
                     outToServer.writeBytes(port + " " + sentence + '\n');
 
-                    ServerSocket welcomeData = new ServerSocket(port);
-                    Socket dataSocket = welcomeData.accept();
+                    //ServerSocket welcomeData = new ServerSocket(port);
+                    Socket dataSocket = controlSocket;
                     BufferedReader inData = new BufferedReader(new InputStreamReader(dataSocket.getInputStream()));
                     while (inData.read() != -1) {
                         modifiedSentence = inData.readLine();
@@ -64,7 +64,7 @@ class FTPClient{
                     }
 
                     inData.close();
-                    welcomeData.close();
+                    //welcomeData.close();
                     dataSocket.close();
                     //System.out.println("\nWhat would you like to do next: \n retr: file.txt ||stor: file.txt  || close");
                     sendySentence += "\nWhat would you like to do next: \n retr: file.txt || quit:\n";
