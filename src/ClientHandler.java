@@ -38,7 +38,7 @@ public class ClientHandler extends Thread {
      **/
     @Override
     public void run() {
-        while (socket.isConnected()) {
+        while (socket.isConnected() && !socket.isClosed()) {
             try {
                 fromClient = readBuffer.readLine();
 
@@ -70,7 +70,13 @@ public class ClientHandler extends Thread {
             } catch (Throwable e) {
                 e.printStackTrace();
             }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        System.out.println("Client: " + socket.getRemoteSocketAddress() + " disconnected");
     }
 
     private void processPeerData() {

@@ -46,11 +46,10 @@ class FTPClient{
             while (sentence != null && !sentence.isEmpty()) {
                 String modifiedSentence;
 
-
                 //String sentence = inFromUser.readLine();
 
                 if (sentence.equals("list:")) {
-                    
+
                     port = port + 2;
                     outToServer.writeBytes(port + " " + sentence + '\n');
 
