@@ -55,10 +55,8 @@ public class P2PClient extends Thread {
                 }
                 // sends a quit message to central server.
                 if (disconnectCommand != null && !disconnectCommand.isEmpty()) {
-                    sendDisconnectCommand(disconnectCommand);
-                    out.close();
-                    in.close();
-                    System.out.println("Disconnect command sent to:  " + socket.getInetAddress().getHostAddress());
+                    //sendDisconnectCommand(disconnectCommand);
+
                     disconnectCommand = null;
                 }
 
@@ -73,7 +71,6 @@ public class P2PClient extends Thread {
                 }
 
                 if (searchCommand != null && !searchCommand.isEmpty()) {
-                    System.out.println("Searching for: " + searchCommand);
                     sendSearchCommand(searchCommand);
                     searchCommandSent = true;
                     searchCommand = null;
@@ -121,7 +118,11 @@ public class P2PClient extends Thread {
     public void sendDisconnectCommand(String command) throws IOException {
         disconnectCommand = command + InetAddress.getLocalHost().getHostAddress() + "\r\n";
         out.writeBytes(disconnectCommand);
+        System.out.println("Disconnect command sent to:  " + socket.getInetAddress().getHostAddress());
+        out.close();
+        in.close();
     }
+
     // Needs to send to CentralServer somewhere
     public void sendFTPCommand(String command) throws IOException {
         FTPCommand = command;
@@ -138,6 +139,7 @@ public class P2PClient extends Thread {
 
     public void sendSearchCommand(String command) {
         try {
+            System.out.println("Searching for: " + searchCommand);
             searchCommand = "search " + command + "\r\n";
             out.writeBytes(searchCommand);
         } catch (Exception e) {

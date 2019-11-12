@@ -119,6 +119,7 @@ public class P2PClientGUI extends Component {
             if (e.getSource() == searchButton){
                 //client.sendSearchCommand(word);
                 client.searchCommand = keyword.getText();
+                client.sendSearchCommand(client.searchCommand);
                 //might need some fixing
                 HashSet<Peer> peerSet = null;
                 while (peerSet == null){
@@ -175,8 +176,12 @@ public class P2PClientGUI extends Component {
                 } else {
                     connectButton.setText("Connect");
                     client.disconnectCommand = "quit: ";
+                    try {
+                        client.sendDisconnectCommand(client.disconnectCommand);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-
             }
 
             //need to wait for client to give command line
