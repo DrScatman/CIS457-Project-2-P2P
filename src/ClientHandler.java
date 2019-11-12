@@ -23,11 +23,12 @@ public class ClientHandler extends Thread {
         System.out.println("Client connected " + socket.getInetAddress());
     }
 
-    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out) throws Exception {
+    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out, ObjectOutputStream oos) throws Exception {
         super();
         this.socket = connection;
         this.readBuffer = readBuffer;
         this.out = out;
+        this.oos = oos;
 
         System.out.println("Client connected " + socket.getInetAddress() + " socket channel: " + socket.getRemoteSocketAddress());
     }
@@ -69,9 +70,6 @@ public class ClientHandler extends Thread {
         }
     }
 
-    /**
-     * add IP for users
-     **/
     private void processPeerData() {
         try {
             // First string received contains the username, hostname, and speed for the client
@@ -84,11 +82,12 @@ public class ClientHandler extends Thread {
             out.writeUTF("Successfully connected to host: " + socket.getInetAddress().getHostAddress());
             Peer peer = new Peer(clientName, hostName, speed, socket.getRemoteSocketAddress().toString());
             this.peer = peer;
-            Set<FileData> fileData = null;
+            HashSet<FileData> fileData = new HashSet<FileData>();
             CentralServer.map.put(this.peer, fileData);
-            System.out.println("User: " + peer.getHostUserName() + " @ " + peer.getIpAddress() + " has joined. Total users: " + CentralServer.userList.size());
+            System.out.println("User: " + peer.getHostUserName() + " @ " + peer.getIpAddress() + " has joined. Total users: " + CentralServer.map.size());
 
         } catch (Throwable e) {
+            e.printStackTrace();
             System.out.println("Process Peer Data Error");
         }
     }
@@ -101,12 +100,8 @@ public class ClientHandler extends Thread {
             if (data.equals("200")) {
                 //Reads in the number of files available for download.
                 String fileName = tokens.nextToken();
-                ArrayList<String> fileDescription = new ArrayList<>();
+                String fileDescription = tokens.nextToken();
                 FileData fileData;
-
-                while (tokens.hasMoreTokens()) {
-                    fileDescription.add(tokens.nextToken());
-                }
 
                 fileData = new FileData(fileName, fileDescription);
                 System.out.println("User: " + this.peer.getHostUserName() + " Added -> " + fileData.toString());
@@ -230,8 +225,7 @@ public class ClientHandler extends Thread {
                     }
                 }
             }
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            out.writeByte(peersWithMatchingFiles.size());
+            //out.writeByte(peersWithMatchingFiles.size());
             for (Peer peer : peersWithMatchingFiles) {
                 oos.writeObject(peer);
             }

@@ -8,12 +8,11 @@ import java.util.List;
 public class P2PClient extends Thread {
 
     private Socket socket;
-    private DataInputStream in;
+    private ObjectInputStream in;
     private DataOutputStream out;
     //    private boolean connectedToCentralServer;
     private String searchResponse;
     private FTPServer ftpServer;
-    private ObjectInputStream ois;
     private HashSet<Peer> peerSet;
     private boolean searchCommandSent;
     private static final String FILE_LIST_FILENAME = "filelist.txt";
@@ -32,9 +31,10 @@ public class P2PClient extends Thread {
     public P2PClient(String serverHostName, int port) {
         try {
             socket = new Socket(serverHostName, port);
-            in = new DataInputStream(socket.getInputStream());
+            //in = new DataInputStream(socket.getInputStream());
+            in = new ObjectInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            //ois = new ObjectInputStream(socket.getInputStream());
+            peerSet = new HashSet<>();
 
             ftpServer = new FTPServer();
             ftpServer.start();
@@ -80,14 +80,17 @@ public class P2PClient extends Thread {
                 }
 
                 if (searchCommandSent) {
-                    int len = in.readByte();
-                    while (len > 0) {
+                    boolean EOF = false;
+                    while (!EOF) {
                         try {
-                            Peer peer = (Peer) ois.readObject();
+                            Peer peer = (Peer) in.readObject();
                             if (peer != null) {
                                 peerSet.add(peer);
                             }
-                        } catch (ClassNotFoundException ignored) {
+                        } catch (EOFException e) {
+                            EOF = true;
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
                         }
                     }
                     searchCommandSent = false;

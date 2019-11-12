@@ -13,7 +13,7 @@ public class CentralServer {
     //peerData holds a list of PeerData objects to create a list of all available files across clients.
     public static ArrayList<Peer> userList = new ArrayList<Peer>();
     public static ArrayList<FileData> fileList = new ArrayList<FileData>();
-    public static HashMap<Peer, Set<FileData>> map;
+    public static HashMap<Peer, Set<FileData>> map = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
 
@@ -30,8 +30,11 @@ public class CentralServer {
                 Socket connectionSocket = welcomeSocket.accept();
                 // Establish I/O streams
                 BufferedReader readBuffer = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                DataOutputStream out = new DataOutputStream(connectionSocket.getOutputStream());
-                ClientHandler clientHandler = new ClientHandler(connectionSocket, readBuffer, out);
+                OutputStream outStream = connectionSocket.getOutputStream();
+                DataOutputStream out = new DataOutputStream(outStream);
+                ObjectOutputStream oos = new ObjectOutputStream(outStream);
+
+                ClientHandler clientHandler = new ClientHandler(connectionSocket, readBuffer, out, oos);
                 clientHandler.start();
             }
 
