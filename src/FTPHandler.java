@@ -38,6 +38,7 @@ public class FTPHandler extends Thread{
         int port = Integer.parseInt(frstln);
         String clientCommand = tokens.nextToken();
         System.out.println(clientCommand + socket.getInetAddress());
+        System.out.println(socket.getInetAddress().getHostAddress());
         if (clientCommand.equals("list:")) {
             //System.out.println("a");
             Socket dataSocket = new Socket(socket.getInetAddress().getHostAddress(), port);
@@ -65,7 +66,7 @@ public class FTPHandler extends Thread{
 
 
         if (clientCommand.startsWith("retr:")){
-            Socket dataSocket = new Socket(socket.getInetAddress(), port);
+            Socket dataSocket = new Socket(socket.getInetAddress().getHostAddress(), port);
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
             String fileName = tokens.nextToken();//starting after the space
@@ -95,7 +96,7 @@ public class FTPHandler extends Thread{
         }
 
         if (clientCommand.startsWith("stor:")){
-            Socket dataSocket = new Socket(socket.getInetAddress(), port);
+            Socket dataSocket = new Socket(socket.getInetAddress().getHostAddress(), port);
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
             //should turn into a file need to add codes and stuff
