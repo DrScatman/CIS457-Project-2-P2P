@@ -118,19 +118,16 @@ public class P2PClientGUI extends Component {
 
             //need to wait for client to give table
             if (e.getSource() == searchButton){
-                //client.sendSearchCommand(word);
                 client.searchCommand = keyword.getText();
                 client.sendSearchCommand(client.searchCommand);
                 //might need some fixing
                 HashSet<Peer> peerSet = null;
-                while (peerSet == null){
+                while (peerSet == null) {
                     peerSet = client.loadPeerList();
                 }
                 for (Peer peer : peerSet) {
                     String[] tableRow = new String[] {
-                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
-                            // did you mean to put this?:
-                            //peer.getSpeed(), peer.getHostUserName(), peer.getHostName()
+                            peer.getSpeed(), peer.getHostUserName(), peer.getHostName()
                     };
                     model.addRow(tableRow);
                 }
@@ -198,18 +195,17 @@ public class P2PClientGUI extends Component {
             }
 
             if (e.getSource() == refreshButton){
-                String word = keyword.getText();
-                client.sendSearchCommand(word);
+                client.searchCommand = keyword.getText();
                 //might need some fixing
                 model.setRowCount(0);
                 HashSet<Peer> peerSet = null;
                 peerSet = client.loadPeerList();
-
+                while (peerSet == null){
+                    peerSet = client.loadPeerList();
+                }
                 for (Peer peer : peerSet) {
                     String[] tableRow = new String[] {
-                            peer.getSpeed(), peer.getHostName(), peer.getHostName()
-                            // did you mean to put this?:
-                            //peer.getSpeed(), peer.getHostUserName(), peer.getHostName()
+                            peer.getSpeed(), peer.getHostUserName(), peer.getHostName()
                     };
                     model.addRow(tableRow);
                 }

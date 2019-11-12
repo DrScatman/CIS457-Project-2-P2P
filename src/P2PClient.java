@@ -100,6 +100,7 @@ public class P2PClient extends Thread {
                 e.printStackTrace();
             }
         }
+        System.out.println("Disconnected");
     }
 
     //needs to get list of clients and their files from the server
@@ -155,7 +156,9 @@ public class P2PClient extends Thread {
         try {
             System.out.println("Searching for: " + searchCommand);
             searchCommand = "search " + command + "\r\n";
+            searchCommandSent = true;
             out.writeBytes(searchCommand);
+            searchCommand = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
