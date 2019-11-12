@@ -20,11 +20,7 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket connection) throws Exception {
         super();
         this.socket = connection;
-        //System.out.println("Client connected " + socket.getInetAddress());
-        readBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new DataOutputStream(socket.getOutputStream());
-        oos = new ObjectOutputStream(socket.getOutputStream());
-        System.out.println("Client connected " + socket.getInetAddress() + " socket channel: " + socket.getRemoteSocketAddress());
+        System.out.println("Client connected " + socket.getInetAddress());
     }
 
     public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out, ObjectOutputStream oos) throws Exception {
@@ -58,9 +54,6 @@ public class ClientHandler extends Thread {
 
                         if (data.equals("200")) {
                             processPeerFiles();
-                        }
-                        if (data.equals("quit:")) {
-                            disconnectPeer();
                         }
 
                         if (data.equals("search")) {
@@ -154,13 +147,6 @@ public class ClientHandler extends Thread {
     }
 
     public void disconnectPeer() {
-        String searchKey = tokens.nextToken();
-        System.out.println(searchKey);
-        for (Peer peer : CentralServer.map.keySet())  {
-            if (peer.getIpAddress().equals(searchKey)) {
-                CentralServer.map.remove(peer);
-            }
-        }
 
     }
     //int numFiles = Integer.parseInt(data);
@@ -218,8 +204,6 @@ public class ClientHandler extends Thread {
      * Searches for the files the client is requesting
      **/
     private void processSearchRequest() {
-        HashSet<Peer> peersWithMatchingFiles = new HashSet<>();
-
         try {
             System.out.println("Process");
 //            System.out.println(new DataInputStream(socket.getInputStream()).readUTF());
@@ -233,18 +217,13 @@ public class ClientHandler extends Thread {
 
             for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                 for (FileData file : entry.getValue()) {
-
-                    if (file.getFileDescription().toLowerCase().contains(searchKey.toLowerCase())) {
-                        peersWithMatchingFiles.add(entry.getKey());
+                    if (file.getFileDescription().contains(searchKey)) {
+                        Peer peer = entry.getKey();
+                        out.writeUTF(peer.getIpAddress() + ":" + file.getFileName() + " ");
                     }
                 }
             }
             //out.writeByte(peersWithMatchingFiles.size());
-            for (Peer peer : peersWithMatchingFiles) {
-                oos.writeObject(peer);
-                oos.flush();
-            }
-            System.out.println("Sending " + peersWithMatchingFiles.size() + " Peer(s) matching search");
 //            }
         } catch (Throwable e) {
             e.printStackTrace();
