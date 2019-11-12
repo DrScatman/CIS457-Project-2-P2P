@@ -20,7 +20,11 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket connection) throws Exception {
         super();
         this.socket = connection;
-        System.out.println("Client connected " + socket.getInetAddress());
+        //System.out.println("Client connected " + socket.getInetAddress());
+        readBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new DataOutputStream(socket.getOutputStream());
+        oos = new ObjectOutputStream(socket.getOutputStream());
+        System.out.println("Client connected " + socket.getInetAddress() + " socket channel: " + socket.getRemoteSocketAddress());
     }
 
     public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out, ObjectOutputStream oos) throws Exception {
