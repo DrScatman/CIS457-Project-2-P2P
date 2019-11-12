@@ -1,19 +1,17 @@
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class P2PClient extends Thread {
 
     private Socket socket;
-    private ObjectInputStream in;
+    private DataInputStream in;
     private DataOutputStream out;
     //    private boolean connectedToCentralServer;
     private String searchResponse;
     private FTPServer ftpServer;
-    private HashSet<Peer> peerSet;
+    private HashSet<String> peerSet;
     private boolean searchCommandSent;
     private static final String FILE_LIST_FILENAME = "filelist.txt";
     private FTPClient ftpClient;
@@ -33,8 +31,8 @@ public class P2PClient extends Thread {
         try {
             socket = new Socket(serverHostName, port);
             //in = new DataInputStream(socket.getInputStream());
-            in = new ObjectInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
             peerSet = new HashSet<>();
 
             ftpServer = new FTPServer();
@@ -48,7 +46,11 @@ public class P2PClient extends Thread {
     public void run() {
         while (socket.isConnected()) {
             try {
-
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
                 if (connectCommand != null && !connectCommand.isEmpty()) {
                     sendConnectCommand(connectCommand);
                     System.out.println("Connect command sent to:  " + socket.getInetAddress().getHostAddress());
@@ -68,32 +70,6 @@ public class P2PClient extends Thread {
                     sendFTPCommand(FTPCommand);
                     FTPCommand = null;
                 }
-
-                if (searchCommand != null && !searchCommand.isEmpty()) {
-                   // sendSearchCommand(searchCommand);
-                    searchCommandSent = true;
-                    searchCommand = null;
-                }
-
-                if (searchCommandSent) {
-                    boolean EOF = false;
-                    while (!EOF) {
-                        try {
-                            Peer peer = (Peer) in.readObject();
-                            if (peer != null) {
-                                peerSet.add(peer);
-                            }
-                        } catch (EOFException e) {
-                            EOF = true;
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    searchCommandSent = false;
-                }
-
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -141,7 +117,7 @@ public class P2PClient extends Thread {
         FTPCommand = command;
     }
 
-    public HashSet<Peer> loadPeerList() {
+    public Set<String> loadPeerInfo() {
         return peerSet;
     }
 
@@ -160,6 +136,20 @@ public class P2PClient extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void checkForPeers() {
+        try {
+            String input = in.readUTF();
+            if (input.contains(":")) {
+                String[] info = input.split(" ");
+                peerSet.addAll(Arrays.asList(info));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        searchCommandSent = false;
     }
 
     public void sendNewFileCommand(String command) throws IOException {

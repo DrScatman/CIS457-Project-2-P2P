@@ -121,15 +121,15 @@ public class P2PClientGUI extends Component {
                 client.searchCommand = keyword.getText();
                 client.sendSearchCommand(client.searchCommand);
                 //might need some fixing
-                HashSet<Peer> peerSet = null;
+
+                Set<String> peerSet = null;
                 while (peerSet == null) {
-                    peerSet = client.loadPeerList();
+                    client.checkForPeers();
+                    peerSet = client.loadPeerInfo();
                 }
-                for (Peer peer : peerSet) {
-                    String[] tableRow = new String[] {
-                            peer.getSpeed(), peer.getHostUserName(), peer.getHostName()
-                    };
-                    model.addRow(tableRow);
+                for (String s : peerSet) {
+                    String[] data = s.split(":");
+                    model.addRow(data);
                 }
             }
 
@@ -198,16 +198,14 @@ public class P2PClientGUI extends Component {
                 client.searchCommand = keyword.getText();
                 //might need some fixing
                 model.setRowCount(0);
-                HashSet<Peer> peerSet = null;
-                peerSet = client.loadPeerList();
-                while (peerSet == null){
-                    peerSet = client.loadPeerList();
+                Set<String> peerSet = null;
+                while (peerSet == null) {
+                    client.checkForPeers();
+                    peerSet = client.loadPeerInfo();
                 }
-                for (Peer peer : peerSet) {
-                    String[] tableRow = new String[] {
-                            peer.getSpeed(), peer.getHostUserName(), peer.getHostName()
-                    };
-                    model.addRow(tableRow);
+                for (String s : peerSet) {
+                    String[] data = s.split(":");
+                    model.addRow(data);
                 }
                 model.fireTableDataChanged();
                 hostsTable.setModel(model);
