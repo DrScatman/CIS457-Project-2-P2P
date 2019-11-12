@@ -118,6 +118,7 @@ class FTPClient{
                     String read = inData.readLine();
                     if (read.equals("200 OK")) {
                         //PATH should be directory of client
+                        String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P\\";
                         File folder = new File("C:\\Users\\bunny\\Desktop\\folder");
                         String[] files = folder.list();
                         //finding our file in directory and sending it

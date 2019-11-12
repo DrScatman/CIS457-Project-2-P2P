@@ -56,6 +56,7 @@ public class P2PClient extends Thread {
                     sendConnectCommand(connectCommand);
                     System.out.println("Connect command sent to:  " + socket.getInetAddress().getHostAddress());
                     connectCommand = null;
+                    sendFileList();
                 }
 
                 if (disconnectCommand != null && !disconnectCommand.isEmpty()) {
@@ -76,6 +77,50 @@ public class P2PClient extends Thread {
             }
         }
         System.out.println("Disconnected");
+    }
+
+    private void sendFileList() {
+        String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P\\fileList.txt";
+        HashSet<String> files = getFiles(path);
+        for (String file : files) {
+            String[] info = file.split(" ");
+            newFileCommand = info[0] + " " + info[1];
+            try {
+                sendNewFileCommand(newFileCommand);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private HashSet<String> getFiles(String filePath) {
+
+        HashSet<String> files = new HashSet<>();
+        try {
+            File file = new File(filePath);
+
+            if (!file.exists()) {
+                return new HashSet<>();
+            }
+
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+
+            String line = br.readLine();
+            while (line != null) {
+                line = line.trim();
+                if (!line.isEmpty() && !line.equals(" ") && !line.equals(System.lineSeparator())) {
+                    files.add(line);
+                }
+                line = br.readLine();
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new HashSet<>();
+        }
+
+        return files;
     }
 
     //needs to get list of clients and their files from the server

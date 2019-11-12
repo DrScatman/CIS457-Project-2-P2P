@@ -18,8 +18,10 @@ public class FTPHandler extends Thread{
         try{
             while(socket.isConnected()){
                 processRequest();
+                Thread.sleep(500);
             }
         } catch (Exception e){
+            e.printStackTrace();
             System.out.println("Client Disconnected");
         }
 
@@ -46,7 +48,8 @@ public class FTPHandler extends Thread{
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
             //System.out.println("c");
             //For when we need to use on a machine, set PATH to directory of server
-            File folder = new File("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\");
+            String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P";
+            File folder = new File(path);
             String[] files = folder.list();
             //System.out.println("d");
 
@@ -70,7 +73,7 @@ public class FTPHandler extends Thread{
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
             String fileName = tokens.nextToken();//starting after the space
-            String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457Project2";
+            String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457-Project-2-P2P";
             File folder = new File(path);
             String[] files = folder.list();
 
@@ -81,7 +84,7 @@ public class FTPHandler extends Thread{
                     found = true;
                     dataOutToClient.writeBytes("200 OK");
                     dataOutToClient.writeBytes("\n");
-                    FileInputStream fis = new FileInputStream("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\"+ fileName);
+                    FileInputStream fis = new FileInputStream(path + "\\" + fileName);
                     sendBytes(fis, dataOutToClient);
                     fis.close();
                 }
