@@ -230,7 +230,7 @@ public class ClientHandler extends Thread {
             for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                 for (FileData file : entry.getValue()) {
 
-                    if (file.getFileDescription().contains(searchKey)) {
+                    if (file.getFileDescription().toLowerCase().contains(searchKey.toLowerCase())) {
                         peersWithMatchingFiles.add(entry.getKey());
                     }
                 }
@@ -238,7 +238,9 @@ public class ClientHandler extends Thread {
             //out.writeByte(peersWithMatchingFiles.size());
             for (Peer peer : peersWithMatchingFiles) {
                 oos.writeObject(peer);
+                oos.flush();
             }
+            System.out.println("Sending " + peersWithMatchingFiles.size() + " Peer(s) matching search");
 //            }
         } catch (Throwable e) {
             e.printStackTrace();
