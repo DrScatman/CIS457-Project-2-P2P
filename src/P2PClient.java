@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ public class P2PClient extends Thread {
      * Commands that are sent to the client handler
      **/
     String connectCommand;
+    String disconnectCommand;
     String searchCommand;
     private String FTPCommand;
     String newFileCommand;
@@ -51,11 +53,19 @@ public class P2PClient extends Thread {
                     System.out.println("Connect command sent to:  " + socket.getInetAddress().getHostAddress());
                     connectCommand = null;
                 }
+                // sends a quit message to central server.
+                if (disconnectCommand != null && !disconnectCommand.isEmpty()) {
+                    sendDisconnectCommand(disconnectCommand);
+                    out.close();
+                    in.close();
+                    System.out.println("Disconnect command sent to:  " + socket.getInetAddress().getHostAddress());
+                    disconnectCommand = null;
+                }
 
                 if (newFileCommand != null && !newFileCommand.isEmpty()) {
                     newFileCommand = null;
                 }
-
+   ////FIX this  should go to FTP server of peer who has a file you want
                 if (FTPCommand != null && !FTPCommand.isEmpty()) {
                     System.out.println("Sending: " + FTPCommand + "To Central Server");
                     sendFTPCommand(FTPCommand);
@@ -84,6 +94,7 @@ public class P2PClient extends Thread {
                 }
 
 
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,6 +114,11 @@ public class P2PClient extends Thread {
         out.writeBytes(connectCommand);
     }
 
+    // Needs to send to CentralServer somewhere
+    public void sendDisconnectCommand(String command) throws IOException {
+        disconnectCommand = command + InetAddress.getLocalHost().getHostAddress() + "\r\n";
+        out.writeBytes(disconnectCommand);
+    }
     // Needs to send to CentralServer somewhere
     public void sendFTPCommand(String command) throws IOException {
         FTPCommand = command;
