@@ -57,6 +57,10 @@ public class P2PClient extends Thread {
                     System.out.println("Connect command sent to:  " + socket.getInetAddress().getHostAddress());
                     connectCommand = null;
                     sendFileList();
+
+                    sendSearchCommand(" ");
+                    checkForPeers();
+                    loadPeerInfo();
                 }
 
                 if (disconnectCommand != null && !disconnectCommand.isEmpty()) {
@@ -66,7 +70,7 @@ public class P2PClient extends Thread {
                 if (newFileCommand != null && !newFileCommand.isEmpty()) {
                     newFileCommand = null;
                 }
-   ////FIX this  should go to FTP server of peer who has a file you want
+                ////FIX this  should go to FTP server of peer who has a file you want
                 if (FTPCommand != null && !FTPCommand.isEmpty()) {
                     System.out.println("Sending: " + FTPCommand + "To Central Server");
                     sendFTPCommand(FTPCommand);
@@ -184,15 +188,14 @@ public class P2PClient extends Thread {
     }
 
     public void checkForPeers() {
-        peerSet.clear();
         try {
             String input = in.readUTF();
             if (input.contains(":")) {
                 String[] info = input.split(" ");
                 peerSet.addAll(Arrays.asList(info));
             }
-        }
-        catch (Exception e) {
+            Thread.sleep(500);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         searchCommandSent = false;

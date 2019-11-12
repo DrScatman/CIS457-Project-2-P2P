@@ -77,7 +77,7 @@ public class P2PClientGUI extends Component {
 
         //setting defaults because I'm lazy
         port.setText("8081");
-        serverHostname.setText("localhost");
+        serverHostname.setText("35.40.127.128");
         username.setText("user");
         description.setText("desc");
 
@@ -127,11 +127,12 @@ public class P2PClientGUI extends Component {
                     client.checkForPeers();
                     peerSet = client.loadPeerInfo();
                 }
+                System.out.println("Found " + peerSet.size() + " files");
                 for (String s : peerSet) {
                     String[] data = s.split(":");
                     model.addRow(data);
                 }
-                model.fireTableDataChanged();
+               //model.fireTableDataChanged();
                 hostsTable.setModel(model);
             }
 

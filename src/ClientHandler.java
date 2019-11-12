@@ -229,7 +229,10 @@ public class ClientHandler extends Thread {
 
 //            StringTokenizer tokens = new StringTokenizer(keywords);
 //            String search = tokens.nextToken();
-            String searchKey = tokens.nextToken();
+            String searchKey = "";
+            if (tokens.hasMoreTokens()) {
+                searchKey = tokens.nextToken();
+            }
 
 //            if (search.equals("search")) {
 
