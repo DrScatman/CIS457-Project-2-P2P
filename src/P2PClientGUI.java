@@ -221,6 +221,7 @@ public class P2PClientGUI extends Component {
         @Override
         public void windowClosing(WindowEvent e) {
             System.out.println("Closing");
+            c
             e.getWindow().dispose();
         }
     }
