@@ -20,6 +20,9 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket connection) throws Exception {
         super();
         this.socket = connection;
+        readBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new DataOutputStream(socket.getOutputStream());
+        oos = new ObjectOutputStream(socket.getOutputStream());
         System.out.println("Client connected " + socket.getInetAddress());
     }
 
