@@ -72,7 +72,7 @@ public class P2PClientGUI extends Component {
         try {
             hostname.setText(InetAddress.getLocalHost().getHostName() + "/" + InetAddress.getLocalHost().getHostAddress());
         } catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
 
         //setting defaults because I'm lazy
@@ -131,6 +131,8 @@ public class P2PClientGUI extends Component {
                     String[] data = s.split(":");
                     model.addRow(data);
                 }
+                model.fireTableDataChanged();
+                hostsTable.setModel(model);
             }
 
             //Handle open button action.
@@ -196,6 +198,7 @@ public class P2PClientGUI extends Component {
 
             if (e.getSource() == refreshButton){
                 client.searchCommand = keyword.getText();
+                client.sendSearchCommand(client.searchCommand);
                 //might need some fixing
                 model.setRowCount(0);
                 Set<String> peerSet = null;

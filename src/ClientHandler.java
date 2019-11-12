@@ -14,21 +14,21 @@ public class ClientHandler extends Thread {
     BufferedReader readBuffer;
     DataOutputStream out;
     private Peer peer;
-    private ObjectOutputStream oos;
     int i = 1;
 
     public ClientHandler(Socket connection) throws Exception {
         super();
         this.socket = connection;
+         readBuffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+         out = new DataOutputStream(socket.getOutputStream());
         System.out.println("Client connected " + socket.getInetAddress());
     }
 
-    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out, ObjectOutputStream oos) throws Exception {
+    public ClientHandler(Socket connection, BufferedReader readBuffer, DataOutputStream out) throws Exception {
         super();
         this.socket = connection;
         this.readBuffer = readBuffer;
         this.out = out;
-        this.oos = oos;
 
         System.out.println("Client connected " + socket.getInetAddress() + " socket channel: " + socket.getRemoteSocketAddress());
     }
@@ -59,6 +59,9 @@ public class ClientHandler extends Thread {
                         if (data.equals("search")) {
                             processSearchRequest();
                         }
+                        if (data.equals("quit:")) {
+                            disconnectPeer();
+                        }
                     } else {
                         tokens = null;
                         data = null;
@@ -79,8 +82,9 @@ public class ClientHandler extends Thread {
             hostName = tokens.nextToken();
             speed = tokens.nextToken();
 
-            out.writeUTF("Successfully connected to host: " + socket.getInetAddress().getHostAddress());
-            Peer peer = new Peer(clientName, hostName, speed, socket.getRemoteSocketAddress().toString());
+            //out.writeUTF("Successfully connected to host: " + socket.getInetAddress().getHostAddress());
+            String[] ip = socket.getRemoteSocketAddress().toString().split(":");
+            Peer peer = new Peer(clientName, hostName, speed, ip[0]);
             this.peer = peer;
             HashSet<FileData> fileData = new HashSet<FileData>();
             CentralServer.map.put(this.peer, fileData);
@@ -146,8 +150,16 @@ public class ClientHandler extends Thread {
         return new HashSet<>();
     }
 
-    public void disconnectPeer() {
-
+    public void disconnectPeer() throws IOException {
+        String searchKey = tokens.nextToken();
+        System.out.println(searchKey);
+        for (Peer peer : CentralServer.map.keySet()) {
+            if (peer.getIpAddress().equals(searchKey)) {
+                CentralServer.map.remove(peer);
+            }
+        }
+        out.close();
+        readBuffer.close();
     }
     //int numFiles = Integer.parseInt(data);
 
@@ -219,7 +231,7 @@ public class ClientHandler extends Thread {
                 for (FileData file : entry.getValue()) {
                     if (file.getFileDescription().contains(searchKey)) {
                         Peer peer = entry.getKey();
-                        out.writeUTF(peer.getIpAddress() + ":" + file.getFileName() + " ");
+                        out.writeUTF(peer.getSpeed() + ":" + peer.getIpAddress() + ":" + file.getFileName() + " ");
                     }
                 }
             }
