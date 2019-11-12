@@ -93,7 +93,7 @@ public class P2PClient extends Thread {
 
     // Needs to send quit to CentralServer somewhere
     public void sendDisconnectCommand(String command) throws IOException {
-        disconnectCommand = command + InetAddress.getLocalHost().getHostAddress().toString() + "\r\n";
+        disconnectCommand = command + " " + InetAddress.getLocalHost().getHostAddress().toString() + "\r\n";
         out.writeBytes(disconnectCommand);
         System.out.println("Quit message sent to:  " + socket.getInetAddress().getHostAddress());
         out.close();
