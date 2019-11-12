@@ -30,12 +30,12 @@ public class CentralServer {
             while(true) {
                 Socket connectionSocket = welcomeSocket.accept();
                 // Establish I/O streams
-                BufferedReader readBuffer = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                OutputStream outStream = connectionSocket.getOutputStream();
-                DataOutputStream out = new DataOutputStream(outStream);
-                ObjectOutputStream oos = new ObjectOutputStream(outStream);
+                //BufferedReader readBuffer = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+                //OutputStream outStream = connectionSocket.getOutputStream();
+//                DataOutputStream out = new DataOutputStream(outStream);
+//                ObjectOutputStream oos = new ObjectOutputStream(outStream);
 
-                ClientHandler clientHandler = new ClientHandler(connectionSocket, readBuffer, out, oos);
+                ClientHandler clientHandler = new ClientHandler(connectionSocket);
                 clientHandler.start();
             }
 
