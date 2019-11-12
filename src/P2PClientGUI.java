@@ -79,7 +79,7 @@ public class P2PClientGUI extends Component {
         port.setText("8081");
         serverHostname.setText("localhost");
         username.setText("user");
-        description.setText("Desc numbertwo");
+        description.setText("desc");
 
         ButtonListener buttonListener = new ButtonListener();
         searchButton.addActionListener(buttonListener);

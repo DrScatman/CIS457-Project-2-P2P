@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class FileData {
     private String fileName;
-    private ArrayList<String> fileDescription;
+    private String fileDescription;
 
-    public FileData(String fileName, ArrayList<String> fileDescription) {
+    public FileData(String fileName, String fileDescription) {
         this.fileName = fileName;
         this.fileDescription = fileDescription;
     }
@@ -13,17 +13,13 @@ public class FileData {
         return fileName;
     }
 
-    public ArrayList<String> getFileDescription() {
+    public String getFileDescription() {
         return fileDescription;
     }
 
     @Override
     public String toString() {
-        StringBuilder fileDesc = new StringBuilder();
-        for (String desc : fileDescription) {
-            fileDesc.append(desc).append(" ");
-        }
 
-        return "Filename: " + fileName + " File Descriptions: " + fileDesc.toString();
+        return "Filename: " + fileName + " File Descriptions: " + fileDescription;
     }
 }
