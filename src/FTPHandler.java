@@ -69,7 +69,8 @@ public class FTPHandler extends Thread{
             DataOutputStream dataOutToClient = new DataOutputStream(dataSocket.getOutputStream());
 
             String fileName = tokens.nextToken();//starting after the space
-            File folder = new File("C:\\Users\\bunny\\IdeaProjects\\CIS457Project2\\");
+            String path = System.getProperty("user.home") + "\\IdeaProjects\\CIS457Project2";
+            File folder = new File(path);
             String[] files = folder.list();
 
             //finding our file in directory and sending it
