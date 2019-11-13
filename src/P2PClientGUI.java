@@ -83,7 +83,7 @@ public class P2PClientGUI extends Component {
 
         //setting defaults because I'm lazy
         port.setText("8081");
-        serverHostname.setText("35.40.127.128");
+        serverHostname.setText("35.40.125.251");
         username.setText("user");
 
         ButtonListener buttonListener = new ButtonListener();
@@ -112,6 +112,7 @@ public class P2PClientGUI extends Component {
         model.addColumn("Hostname");
         model.addColumn("Filename");
         hostsTable = new JTable(model);
+        hostsTable.setAutoCreateRowSorter(true);
     }
 
     private class ButtonListener implements ActionListener {

@@ -40,10 +40,9 @@ class FTPClient{
         this.sentence = sentence;
     }
 
-
     public void run() {
         try {
-            while (sentence != null && !sentence.isEmpty()) {
+            while (sentence != null && !sentence.isEmpty() && !controlSocket.isClosed()) {
                 String modifiedSentence;
 
                 //String sentence = inFromUser.readLine();
@@ -153,6 +152,8 @@ class FTPClient{
 
                     port += 2;
                     outToServer.writeBytes(port + " " + sentence + '\n');
+                    outToServer.close();
+                    inFromServer.close();
                     controlSocket.close();
                     //System.out.println("Connection closed");
                     sendySentence += "Connection closed\n";

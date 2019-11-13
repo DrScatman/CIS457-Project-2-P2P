@@ -192,6 +192,7 @@ public class ClientHandler extends Thread {
             StringBuilder result = new StringBuilder();
             for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                 for (FileData file : entry.getValue()) {
+
                     if (file.getFileDescription().toLowerCase().contains(searchKey.toLowerCase())) {
                         Peer peer = entry.getKey();
                         result.append(peer.getSpeed()).append(":").append(peer.getIpAddress()).append(":").append(file.getFileName()).append(" ");
