@@ -121,7 +121,7 @@ public class ClientHandler extends Thread {
                 fileData = new FileData(fileName, desc.toString());
                 System.out.println("User: " + this.peer.getHostUserName() + " Added -> " + fileData.toString());
                 CentralServer.map.get(this.peer).add(fileData);
-                System.out.println(CentralServer.map.get(this.peer).size());
+                System.out.println(CentralServer.map.size() + " Peers");
             }
         } catch (Exception e) {
             System.out.println("Process Peer File Error");
@@ -156,13 +156,20 @@ public class ClientHandler extends Thread {
     public void disconnectPeer() throws IOException {
         String searchKey = tokens.nextToken();
         System.out.println(searchKey);
-        for (Peer peer : CentralServer.map.keySet()) {
-            if (peer.getIpAddress().equals(searchKey)) {
+        Set<Peer> set = new HashSet<>(CentralServer.map.keySet());
+
+        for (Peer peer : set) {
+            if (peer.getIpAddress().contains(searchKey)) {
+                System.out.println("Removing: " + peer.getIpAddress());
                 CentralServer.map.remove(peer);
             }
         }
+
+        System.out.println("Peers connected: " + CentralServer.map.size());
+
         out.close();
         readBuffer.close();
+        socket.close();
     }
 
     /**
@@ -185,7 +192,7 @@ public class ClientHandler extends Thread {
 
             for (Map.Entry<Peer, Set<FileData>> entry : CentralServer.map.entrySet()) {
                 for (FileData file : entry.getValue()) {
-                    if (file.getFileDescription().contains(searchKey)) {
+                    if (file.getFileDescription().toLowerCase().contains(searchKey.toLowerCase())) {
                         Peer peer = entry.getKey();
                         out.writeUTF(peer.getSpeed() + ":" + peer.getIpAddress() + ":" + file.getFileName() + " ");
                     }

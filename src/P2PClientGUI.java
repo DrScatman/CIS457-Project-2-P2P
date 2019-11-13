@@ -13,7 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 
 public class P2PClientGUI extends Component {
-    /** Labels **/
+    /**
+     * Labels
+     **/
     private JLabel serverHostnameLabel;
     private JLabel connectionLabel;
     private JLabel portLabel;
@@ -25,7 +27,9 @@ public class P2PClientGUI extends Component {
     private JLabel ftpLabel;
     private JLabel commandLabel;
 
-    /** Text Fields/Areas **/
+    /**
+     * Text Fields/Areas
+     **/
     private JTextField serverHostname;
     private JTextField port;
     private JTextField username;
@@ -35,25 +39,33 @@ public class P2PClientGUI extends Component {
 
     private JTextArea commandLineArea;
 
-    /** Buttons **/
+    /**
+     * Buttons
+     **/
     private JButton connectButton;
     private JButton searchButton;
     private JButton goButton;
     private JButton refreshButton;
 
 
-    /** Combo Boxes**/
+    /**
+     * Combo Boxes
+     **/
     private JComboBox<String> speedBox;
 
 
-    /** Everything else**/
+    /**
+     * Everything else
+     **/
     private JTable hostsTable;
     private JPanel mainPanel;
     private JScrollPane commandPane;
     private JScrollPane tablePane;
 
-    /** Instances **/
-    public  P2PClient client;
+    /**
+     * Instances
+     **/
+    public P2PClient client;
     private DefaultTableModel model;
 
     public P2PClientGUI() {
@@ -65,7 +77,7 @@ public class P2PClientGUI extends Component {
 
         try {
             hostname.setText(InetAddress.getLocalHost().getHostName() + "/" + InetAddress.getLocalHost().getHostAddress());
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -108,23 +120,36 @@ public class P2PClientGUI extends Component {
         public void actionPerformed(ActionEvent e) {
 
             //need to wait for client to give table
-            if (e.getSource() == searchButton){
-                client.searchCommand = keyword.getText();
-                client.sendSearchCommand(client.searchCommand);
-                //might need some fixing
-
+            if (e.getSource() == searchButton) {
                 Set<String> peerSet = null;
+
                 while (peerSet == null) {
-                    client.checkForPeers();
-                    peerSet = client.loadPeerInfo();
+                    int sizeCurr = 0;
+                    if (peerSet != null) {
+                        sizeCurr = peerSet.size();
+                    }
+                    client.searchCommand = keyword.getText();
+                    client.sendSearchCommand(client.searchCommand);
+                    //might need some fixing
+
+                    while (peerSet == null) {
+                        client.checkForPeers();
+                        peerSet = client.loadPeerInfo();
+                    }
+                    if (peerSet.size() <= sizeCurr) {
+                        break;
+                    }
+                    System.out.println("Found " + peerSet.size() + " files");
+                    for (String s : peerSet) {
+                        String[] data = s.split(":");
+                        model.addRow(data);
+                    }
+
+                    client.peerSet.clear();
+
+                    //model.fireTableDataChanged();
+                    hostsTable.setModel(model);
                 }
-                System.out.println("Found " + peerSet.size() + " files");
-                for (String s : peerSet) {
-                    String[] data = s.split(":");
-                    model.addRow(data);
-                }
-               //model.fireTableDataChanged();
-                hostsTable.setModel(model);
             }
 
             //Handle open button action.
@@ -170,6 +195,8 @@ public class P2PClientGUI extends Component {
                     client.disconnectCommand = "quit: ";
                     try {
                         client.sendDisconnectCommand(client.disconnectCommand);
+                        client.socket.close();
+                        client = null;
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -177,7 +204,7 @@ public class P2PClientGUI extends Component {
             }
 
             //need to wait for client to give command line
-            if (e.getSource() == goButton){
+            if (e.getSource() == goButton) {
                 String comm = command.getText();
                 commandLineArea.append(">> " + comm + "\n");
                 try {
@@ -188,32 +215,47 @@ public class P2PClientGUI extends Component {
                 commandLineArea.append(client.commandline);
             }
 
-            if (e.getSource() == refreshButton){
-                client.searchCommand = keyword.getText();
-                client.sendSearchCommand(client.searchCommand);
+            if (e.getSource() == refreshButton) {
                 //might need some fixing
                 model.setRowCount(0);
                 Set<String> peerSet = null;
+
                 while (peerSet == null) {
-                    client.checkForPeers();
-                    peerSet = client.loadPeerInfo();
+                    int sizeCurr = 0;
+                    if (peerSet != null) {
+                        sizeCurr = peerSet.size();
+                    }
+                    client.searchCommand = keyword.getText();
+                    client.sendSearchCommand(client.searchCommand);
+                    //might need some fixing
+
+                    while (peerSet == null) {
+                        client.checkForPeers();
+                        peerSet = client.loadPeerInfo();
+                    }
+                    if (peerSet.size() <= sizeCurr) {
+                        break;
+                    }
+                    System.out.println("Found " + peerSet.size() + " files");
+                    for (String s : peerSet) {
+                        String[] data = s.split(":");
+                        model.addRow(data);
+                    }
+
+                    client.peerSet.clear();
+                    model.fireTableDataChanged();
+                    hostsTable.setModel(model);
                 }
-                for (String s : peerSet) {
-                    String[] data = s.split(":");
-                    model.addRow(data);
                 }
-                model.fireTableDataChanged();
-                hostsTable.setModel(model);
+            }
+        }
+
+        public static class WindowListener extends WindowAdapter {
+            //Figure out how to close the socket connection when closing GUI
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Closing");
+                e.getWindow().dispose();
             }
         }
     }
-
-    public static class WindowListener extends WindowAdapter {
-        //Figure out how to close the socket connection when closing GUI
-        @Override
-        public void windowClosing(WindowEvent e) {
-            System.out.println("Closing");
-            e.getWindow().dispose();
-        }
-    }
-}

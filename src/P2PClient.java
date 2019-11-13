@@ -5,13 +5,13 @@ import java.util.*;
 
 public class P2PClient extends Thread {
 
-    private Socket socket;
+    Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
     //    private boolean connectedToCentralServer;
     private String searchResponse;
     private FTPServer ftpServer;
-    private HashSet<String> peerSet;
+    public HashSet<String> peerSet;
     private boolean searchCommandSent;
     private static final String FILE_LIST_FILENAME = "filelist.txt";
     private FTPClient ftpClient;
